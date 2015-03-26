@@ -1,0 +1,74 @@
+﻿@model PZ.Models.Order
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Order</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Comment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Comment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IssueDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IssueDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.State)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.State)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Value)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Value)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Table.Comment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Table.Comment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User.City)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.City)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Waiter.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Waiter.Name)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

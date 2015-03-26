@@ -1,0 +1,42 @@
+﻿@model PZ.Models.SubOrder
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>SubOrder</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Quantity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Quantity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Dish.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Dish.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Order.Comment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Order.Comment)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
