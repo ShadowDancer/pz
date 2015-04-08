@@ -19,6 +19,8 @@
         <AssociationConnector Association="PZModel.FK__SubOrder__OrderI__29572725" ManuallyRouted="false" />
         <AssociationConnector Association="PZModel.FK__Reservati__Table__1CF15040" ManuallyRouted="false" />
         <AssociationConnector Association="PZModel.FK__Reservati__UserI__1BFD2C07" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="PZModel.Menu" Width="1.5" PointX="7.25" PointY="6.75" IsExpanded="true" />
+        <AssociationConnector Association="PZModel.FK_Dish_Menu" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="PZModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="PZModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Dish">
           <Key>
             <PropertyRef Name="ID" />
@@ -17,7 +17,16 @@
           <Property Name="PromotionalPrice" Type="numeric" Precision="5" Scale="2" />
           <Property Name="PicPath" Type="varchar" MaxLength="255" />
           <Property Name="Rating" Type="numeric" Precision="3" Scale="2" />
+          <Property Name="MenuID" Type="int" />
           <Property Name="IsServed" Type="bit" />
+        </EntityType>
+        <EntityType Name="Menu">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Category" Type="nchar" MaxLength="50" Nullable="false" />
+          <Property Name="Subcategory" Type="nchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
@@ -176,8 +185,21 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Dish_Menu">
+          <End Role="Menu" Type="Self.Menu" Multiplicity="0..1" />
+          <End Role="Dish" Type="Self.Dish" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Menu">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Dish">
+              <PropertyRef Name="MenuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="PZModelStoreContainer">
           <EntitySet Name="Dish" EntityType="Self.Dish" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Menu" EntityType="Self.Menu" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Reservation List" EntityType="Self.Reservation List" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubOrder" EntityType="Self.SubOrder" Schema="dbo" store:Type="Tables" />
@@ -212,9 +234,12 @@
             <End Role="Order" EntitySet="Order" />
             <End Role="SubOrder" EntitySet="SubOrder" />
           </AssociationSet>
+          <AssociationSet Name="FK_Dish_Menu" Association="Self.FK_Dish_Menu">
+            <End Role="Menu" EntitySet="Menu" />
+            <End Role="Dish" EntitySet="Dish" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="PZModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -232,6 +257,8 @@
           <Property Name="Rating" Type="Decimal" Precision="3" Scale="2" />
           <Property Name="IsServed" Type="Boolean" />
           <NavigationProperty Name="SubOrder" Relationship="Self.FK__SubOrder__DishID__2A4B4B5E" FromRole="Dish" ToRole="SubOrder" />
+          <Property Name="MenuID" Type="Int32" />
+          <NavigationProperty Name="Menu" Relationship="PZModel.FK_Dish_Menu" FromRole="Dish" ToRole="Menu" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
@@ -439,7 +466,33 @@
             <End Role="User" EntitySet="User" />
             <End Role="Reservation_List" EntitySet="Reservation_List" />
           </AssociationSet>
+          <EntitySet Name="Menu" EntityType="PZModel.Menu" />
+          <AssociationSet Name="FK_Dish_Menu" Association="PZModel.FK_Dish_Menu">
+            <End Role="Menu" EntitySet="Menu" />
+            <End Role="Dish" EntitySet="Dish" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Menu">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Category" Type="String" Nullable="false" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="Subcategory" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="Dish" Relationship="PZModel.FK_Dish_Menu" FromRole="Menu" ToRole="Dish" />
+        </EntityType>
+        <Association Name="FK_Dish_Menu">
+          <End Type="PZModel.Menu" Role="Menu" Multiplicity="0..1" />
+          <End Type="PZModel.Dish" Role="Dish" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Menu">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Dish">
+              <PropertyRef Name="MenuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -449,6 +502,7 @@
           <EntitySetMapping Name="Dish">
             <EntityTypeMapping TypeName="PZModel.Dish">
               <MappingFragment StoreEntitySet="Dish">
+                <ScalarProperty Name="MenuID" ColumnName="MenuID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -537,6 +591,15 @@
                 <ScalarProperty Name="Reputation" ColumnName="Reputation" />
                 <ScalarProperty Name="Salary" ColumnName="Salary" />
                 <ScalarProperty Name="Sex" ColumnName="Sex" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Menu">
+            <EntityTypeMapping TypeName="PZModel.Menu">
+              <MappingFragment StoreEntitySet="Menu">
+                <ScalarProperty Name="Subcategory" ColumnName="Subcategory" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

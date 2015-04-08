@@ -32,5 +32,6 @@ namespace PZ.Models
         public virtual DbSet<Table> Table { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<Waiter> Waiter { get; set; }
+        public virtual DbSet<Menu> Menu { get; set; }
     }
 }

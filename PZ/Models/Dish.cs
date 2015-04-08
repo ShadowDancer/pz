@@ -28,7 +28,9 @@ namespace PZ.Models
         public string PicPath { get; set; }
         public Nullable<decimal> Rating { get; set; }
         public Nullable<bool> IsServed { get; set; }
+        public Nullable<int> MenuID { get; set; }
     
         public virtual ICollection<SubOrder> SubOrder { get; set; }
+        public virtual Menu Menu { get; set; }
     }
 }

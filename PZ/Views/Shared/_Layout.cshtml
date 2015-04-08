@@ -25,14 +25,22 @@
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                     <li>Użytkownik:</li>
-                    <li>@Html.ActionLink("User", "../User")</li>
+                    <li>@Html.ActionLink("Profile", "../User/View")</li>
                     <li>@Html.ActionLink("Order", "../Order")</li>
                     <li>@Html.ActionLink("SubOrder", "../SubOrder")</li>
                     <li>@Html.ActionLink("ReservationList", "../ReservationList")</li>
-                    <li>Admin:</li>
-                    <li>@Html.ActionLink("Waiter", "../Waiter")</li>
-                    <li>@Html.ActionLink("Table", "../Table")</li>
-                    <li>@Html.ActionLink("Dish", "../Dish")</li>
+                    <li class="dropdown-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <span class="caret"></span>Dropdown
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Waiter", "../Waiter")</li>
+                            <li>@Html.ActionLink("Table", "../Table")</li>
+                            <li>@Html.ActionLink("Dish", "../Dish")</li>
+                        </ul>
+
+
+                    </li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
