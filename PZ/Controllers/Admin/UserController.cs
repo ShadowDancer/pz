@@ -22,13 +22,21 @@ namespace PZ.Controllers
             return View(db.User.ToList());
         }
 
-        public ActionResult Profile()
+        public ActionResult ViewProfile()
         {
-            var currentUserId = User.Identity.GetUserId(); 
-            using(var manager = new UserManager<UserViewModel>(new UserStore<UserViewModel>(new ApplicationDbContext())))
+            var currentUserId = User.Identity.GetUserId();
+            if (currentUserId != null)
             {
-                UserViewModel UserVM = manager.FindById(currentUserId);
-                return Details(UserVM.PZUser.ID);
+                UserViewModel userVM = new UserViewModel();
+                if (userVM != null)
+                {
+                    return View(userVM);
+                }
+            }
+            else
+            {
+                Response.Redirect("~/Account/Login");
+                Response.End();
             }
 
             return null;
@@ -52,7 +60,7 @@ namespace PZ.Controllers
         // GET: /User/Create
         public ActionResult Create()
         {
-            return View();
+            return ViewProfile();
         }
 
         // POST: /User/Create

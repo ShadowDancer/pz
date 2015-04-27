@@ -35,6 +35,18 @@
         <th>
             @Html.DisplayNameFor(model => model.IsServed)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NameID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Menu.Category)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MenuSubcategory.Subcategory)
+        </th>
         <th></th>
     </tr>
 
@@ -63,6 +75,18 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.IsServed)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NameID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ImageUrl)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Menu.Category)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MenuSubcategory.Subcategory)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |

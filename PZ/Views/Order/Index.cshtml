@@ -4,6 +4,9 @@
     ViewBag.Title = "Index";
 }
 
+<script type="text/javascript">
+</script>
+
 <h2>Index</h2>
 
 <p>
@@ -14,7 +17,7 @@
         <th>
             @Html.DisplayNameFor(model => model.Comment)
         </th>
-        <th>
+        <th class="category">
             @Html.DisplayNameFor(model => model.IssueDate)
         </th>
         <th>
@@ -40,7 +43,7 @@
         <td>
             @Html.DisplayFor(modelItem => item.Comment)
         </td>
-        <td>
+        <td class="category">
             @Html.DisplayFor(modelItem => item.IssueDate)
         </td>
         <td>

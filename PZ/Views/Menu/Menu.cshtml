@@ -1,0 +1,63 @@
+﻿@model PZ.Models.MenuBundleViewModel
+@using PZ.Models
+
+@section Head{
+    <script>
+        $(function () {
+            $(".accordion").accordion();
+        });
+        $(function () {
+            $("#tabs").tabs();
+        });
+
+
+    </script>
+}
+
+@{
+    ViewBag.Title = "Menu";
+}
+
+<h2>Menu</h2>
+
+<div id="tabs">
+    <ul>
+        @foreach (MenuViewModel menu in Model.Menus)
+        {
+            <li><a href="#tab@(menu.ID)">@(menu.Description)</a></li>
+        }
+    </ul>
+
+    @foreach (MenuViewModel menu in Model.Menus)
+    {
+        <div id="tab@(menu.ID)">
+            <div class="accordion">
+                @foreach(SubmenuViewModel submenu in menu.Submenus)
+                {
+                    <h3>@(submenu.Description)</h3>
+                    <div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach(DishViewModel dish in submenu.Dishes)
+                                {
+                                    <tr>
+                                        <td>@(dish.Name)</td>
+                                        <td>@(dish.Price)</td>
+                                        <td>@Html.ActionLink("Order", "Order", new { id = dish.ID })</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

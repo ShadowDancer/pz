@@ -10,12 +10,63 @@ namespace PZ.Models
         {
             get
             {
-                using(PZEntities db = new PZEntities())
+                using (PZEntities db = new PZEntities())
                 {
-                    return db.User.FirstOrDefault(n => n.Email == UserName);
+                    var result = db.User.FirstOrDefault(n => n.Email == UserName);
+                    result = new User();
+                    return result;
                 }
-
             }
+        }
+
+        public string Address
+        {
+            get { return PZUser.Adress; }
+        }
+
+        public string Email
+        {
+            get { return PZUser.Email; }
+        }
+
+        public string Age
+        {
+            get { return PZUser.Age.ToString(); }
+        }
+
+        public string Comment
+        {
+            get { return PZUser.Comment; }
+        }
+
+        public string City
+        {
+            get { return PZUser.City; }
+        }
+
+        public string Name
+        {
+            get { return PZUser.Name; }
+        }
+
+        public string Surname
+        {
+            get { return PZUser.Surname; }
+        }
+
+        public string Phone
+        {
+            get { return PZUser.Phone; }
+        }
+
+        public string Sex
+        {
+            get { return PZUser.Sex; }
+        }
+
+        public int ID
+        {
+            get { return PZUser.ID; }
         }
     }
 

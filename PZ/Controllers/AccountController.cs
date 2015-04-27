@@ -87,6 +87,14 @@ namespace PZ.Controllers
                 if (result.Succeeded)
                 {
 
+                    User newUser = new User();
+                    newUser.Email = user.UserName;
+
+                    using (PZEntities db = new PZEntities())
+                    {
+                        db.User.Add(newUser);
+                        db.SaveChanges();
+                    }
 
                     await SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");

@@ -14,6 +14,11 @@ namespace PZ.Controllers
     {
         private PZEntities db = new PZEntities();
 
+        public ActionResult Menu()
+        {
+            return View(new MenuBundleViewModel());
+        }
+
         // GET: /Default1/
         public ActionResult Index()
         {

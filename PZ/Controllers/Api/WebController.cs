@@ -4,21 +4,63 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using PZ.Controllers.Api.DTO;
 
 namespace PZ.Controllers
 {
     public class WebController : ApiController
     {
-        // GET api/<controller>
-        public IEnumerable<string> Get()
+        public object Get(string type)
         {
-            return new string[] { "value1", "value2" };
+            return Get(type, null);
         }
 
-        // GET api/<controller>/5
-        public string Get(int id)
+
+        // GET api/<controller>/type/id
+        public object Get(string type, int? id)
         {
-            return "value";
+            object result = null;
+            using (var db = new PZ.Models.PZEntities())
+            {
+                switch (type)
+                {
+                    case "Dish":
+                        {
+                            var query = from d in db.Dish
+                                        select new DishDTO
+                                        {
+                                            id = d.ID,
+                                            //name = d.Name,
+                                            //price = d.Price,
+                                            description = d.Description,
+                                            menuid = d.MenuID,
+                                        };
+                            if (id != null)
+                                query = query.Where(n => n.id == id);
+                        
+                            return new DishBundleDTO() { dishes = query.ToArray() };
+                        }
+                    case "Menu":
+                        {
+                            var query = from d in db.Menu
+                                        select new MenuDTO
+                                        {
+                                            id = d.ID,
+                                            category = d.Category,
+                                         //   subcategory = d.Subcategory,
+                                        };
+                            if (id != null)
+                                query = query.Where(n => n.id == id);
+
+                            return new MenuBundleDTO() { menus=query.ToArray(), };
+                        }
+                }
+            }
+
+
+
+
+            return null;
         }
 
         // POST api/<controller>

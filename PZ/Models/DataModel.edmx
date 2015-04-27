@@ -11,22 +11,47 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Description" Type="varchar" MaxLength="255" />
-          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="NameID" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Comment" Type="varchar" MaxLength="255" />
-          <Property Name="Price" Type="numeric" Precision="5" Scale="2" Nullable="false" />
-          <Property Name="PromotionalPrice" Type="numeric" Precision="5" Scale="2" />
-          <Property Name="PicPath" Type="varchar" MaxLength="255" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="255" />
           <Property Name="Rating" Type="numeric" Precision="3" Scale="2" />
-          <Property Name="MenuID" Type="int" />
-          <Property Name="IsServed" Type="bit" />
+          <Property Name="SubcategoryID" Type="int" />
+        </EntityType>
+        <EntityType Name="DishPrices">
+          <Key>
+            <PropertyRef Name="DateFrom" />
+            <PropertyRef Name="DateTo" />
+            <PropertyRef Name="DishID" />
+          </Key>
+          <Property Name="Price" Type="money" Nullable="false" />
+          <Property Name="DateFrom" Type="datetime" Nullable="false" />
+          <Property Name="DateTo" Type="datetime" Nullable="false" />
+          <Property Name="DishID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DishRatings">
+          <Key>
+            <PropertyRef Name="DishID" />
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="DishID" Type="int" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="Rating" Type="float" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="300" />
         </EntityType>
         <EntityType Name="Menu">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Category" Type="nchar" MaxLength="50" Nullable="false" />
-          <Property Name="Subcategory" Type="nchar" MaxLength="10" />
+          <Property Name="Category" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MenuSubcategory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Subcategory" Type="nvarchar" MaxLength="50" />
+          <Property Name="MenuID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
@@ -82,7 +107,6 @@
           <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Surname" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Adress" Type="varchar" MaxLength="255" />
-          <Property Name="Password" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Age" Type="int" />
           <Property Name="Sex" Type="varchar" MaxLength="8" />
         </EntityType>
@@ -185,21 +209,72 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Dish_Menu">
-          <End Role="Menu" Type="Self.Menu" Multiplicity="0..1" />
+        <Association Name="FK_Dish_MenuSubcategory">
+          <End Role="MenuSubcategory" Type="Self.MenuSubcategory" Multiplicity="0..1" />
           <End Role="Dish" Type="Self.Dish" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MenuSubcategory">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Dish">
+              <PropertyRef Name="SubcategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DishPrices_Dish">
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
+          <End Role="DishPrices" Type="Self.DishPrices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dish">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DishPrices">
+              <PropertyRef Name="DishID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DishRatings_Dish">
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
+          <End Role="DishRatings" Type="Self.DishRatings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dish">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DishRatings">
+              <PropertyRef Name="DishID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DishRatings_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="DishRatings" Type="Self.DishRatings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DishRatings">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MenuSubcategory_Menu">
+          <End Role="Menu" Type="Self.Menu" Multiplicity="1" />
+          <End Role="MenuSubcategory" Type="Self.MenuSubcategory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Menu">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="Dish">
+            <Dependent Role="MenuSubcategory">
               <PropertyRef Name="MenuID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="PZModelStoreContainer">
           <EntitySet Name="Dish" EntityType="Self.Dish" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DishPrices" EntityType="Self.DishPrices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DishRatings" EntityType="Self.DishRatings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Menu" EntityType="Self.Menu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MenuSubcategory" EntityType="Self.MenuSubcategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Reservation List" EntityType="Self.Reservation List" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubOrder" EntityType="Self.SubOrder" Schema="dbo" store:Type="Tables" />
@@ -234,9 +309,25 @@
             <End Role="Order" EntitySet="Order" />
             <End Role="SubOrder" EntitySet="SubOrder" />
           </AssociationSet>
-          <AssociationSet Name="FK_Dish_Menu" Association="Self.FK_Dish_Menu">
-            <End Role="Menu" EntitySet="Menu" />
+          <AssociationSet Name="FK_Dish_MenuSubcategory" Association="Self.FK_Dish_MenuSubcategory">
+            <End Role="MenuSubcategory" EntitySet="MenuSubcategory" />
             <End Role="Dish" EntitySet="Dish" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DishPrices_Dish" Association="Self.FK_DishPrices_Dish">
+            <End Role="Dish" EntitySet="Dish" />
+            <End Role="DishPrices" EntitySet="DishPrices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DishRatings_Dish" Association="Self.FK_DishRatings_Dish">
+            <End Role="Dish" EntitySet="Dish" />
+            <End Role="DishRatings" EntitySet="DishRatings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DishRatings_User" Association="Self.FK_DishRatings_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="DishRatings" EntitySet="DishRatings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MenuSubcategory_Menu" Association="Self.FK_MenuSubcategory_Menu">
+            <End Role="Menu" EntitySet="Menu" />
+            <End Role="MenuSubcategory" EntitySet="MenuSubcategory" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -249,16 +340,15 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Price" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
-          <Property Name="PromotionalPrice" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="PicPath" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Rating" Type="Decimal" Precision="3" Scale="2" />
-          <Property Name="IsServed" Type="Boolean" />
           <NavigationProperty Name="SubOrder" Relationship="Self.FK__SubOrder__DishID__2A4B4B5E" FromRole="Dish" ToRole="SubOrder" />
-          <Property Name="MenuID" Type="Int32" />
-          <NavigationProperty Name="Menu" Relationship="PZModel.FK_Dish_Menu" FromRole="Dish" ToRole="Menu" />
+          <Property Name="NameID" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ImageUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="MenuSubcategory" Relationship="PZModel.FK_Dish_MenuSubcategory" FromRole="Dish" ToRole="MenuSubcategory" />
+          <NavigationProperty Name="DishPrices" Relationship="PZModel.FK_DishPrices_Dish" FromRole="Dish" ToRole="DishPrices" />
+          <NavigationProperty Name="DishRatings" Relationship="PZModel.FK_DishRatings_Dish" FromRole="Dish" ToRole="DishRatings" />
+          <Property Name="SubcategoryID" Type="Int32" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
@@ -324,11 +414,11 @@
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Surname" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Adress" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Age" Type="Int32" />
           <Property Name="Sex" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Order" Relationship="Self.FK__Order__UserID__239E4DCF" FromRole="User" ToRole="Order" />
           <NavigationProperty Name="Reservation_List" Relationship="Self.FK__Reservati__UserI__1BFD2C07" FromRole="User" ToRole="Reservation_List" />
+          <NavigationProperty Name="DishRatings" Relationship="PZModel.FK_DishRatings_User" FromRole="User" ToRole="DishRatings" />
         </EntityType>
         <EntityType Name="Waiter">
           <Key>
@@ -466,29 +556,129 @@
             <End Role="User" EntitySet="User" />
             <End Role="Reservation_List" EntitySet="Reservation_List" />
           </AssociationSet>
-          <EntitySet Name="Menu" EntityType="PZModel.Menu" />
-          <AssociationSet Name="FK_Dish_Menu" Association="PZModel.FK_Dish_Menu">
-            <End Role="Menu" EntitySet="Menu" />
+          <EntitySet Name="DishPrices" EntityType="PZModel.DishPrices" />
+          <EntitySet Name="DishRatings" EntityType="PZModel.DishRatings" />
+          <EntitySet Name="MenuSubcategory" EntityType="PZModel.MenuSubcategory" />
+          <AssociationSet Name="FK_Dish_MenuSubcategory" Association="PZModel.FK_Dish_MenuSubcategory">
+            <End Role="MenuSubcategory" EntitySet="MenuSubcategory" />
             <End Role="Dish" EntitySet="Dish" />
           </AssociationSet>
+          <AssociationSet Name="FK_DishPrices_Dish" Association="PZModel.FK_DishPrices_Dish">
+            <End Role="Dish" EntitySet="Dish" />
+            <End Role="DishPrices" EntitySet="DishPrices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DishRatings_Dish" Association="PZModel.FK_DishRatings_Dish">
+            <End Role="Dish" EntitySet="Dish" />
+            <End Role="DishRatings" EntitySet="DishRatings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DishRatings_User" Association="PZModel.FK_DishRatings_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="DishRatings" EntitySet="DishRatings" />
+          </AssociationSet>
+          <EntitySet Name="Menu" EntityType="PZModel.Menu" />
+          <AssociationSet Name="FK_MenuSubcategory_Menu" Association="PZModel.FK_MenuSubcategory_Menu">
+            <End Role="Menu" EntitySet="Menu" />
+            <End Role="MenuSubcategory" EntitySet="MenuSubcategory" />
+          </AssociationSet>
         </EntityContainer>
-        <EntityType Name="Menu">
+        <EntityType Name="DishPrices">
+          <Key>
+            <PropertyRef Name="DateFrom" />
+            <PropertyRef Name="DateTo" />
+            <PropertyRef Name="DishID" />
+          </Key>
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="DateFrom" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DateTo" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DishID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Dish" Relationship="PZModel.FK_DishPrices_Dish" FromRole="DishPrices" ToRole="Dish" />
+        </EntityType>
+        <EntityType Name="DishRatings">
+          <Key>
+            <PropertyRef Name="DishID" />
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="DishID" Type="Int32" Nullable="false" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="Rating" Type="Double" />
+          <Property Name="Comment" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Dish" Relationship="PZModel.FK_DishRatings_Dish" FromRole="DishRatings" ToRole="Dish" />
+          <NavigationProperty Name="User" Relationship="PZModel.FK_DishRatings_User" FromRole="DishRatings" ToRole="User" />
+        </EntityType>
+        <EntityType Name="MenuSubcategory">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Category" Type="String" Nullable="false" MaxLength="50" FixedLength="true" Unicode="true" />
-          <Property Name="Subcategory" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
-          <NavigationProperty Name="Dish" Relationship="PZModel.FK_Dish_Menu" FromRole="Menu" ToRole="Dish" />
+          <Property Name="Subcategory" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MenuID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Dish" Relationship="PZModel.FK_Dish_MenuSubcategory" FromRole="MenuSubcategory" ToRole="Dish" />
+          <NavigationProperty Name="Menu" Relationship="PZModel.FK_MenuSubcategory_Menu" FromRole="MenuSubcategory" ToRole="Menu" />
         </EntityType>
-        <Association Name="FK_Dish_Menu">
-          <End Type="PZModel.Menu" Role="Menu" Multiplicity="0..1" />
+        <Association Name="FK_Dish_MenuSubcategory">
+          <End Type="PZModel.MenuSubcategory" Role="MenuSubcategory" Multiplicity="0..1" />
           <End Type="PZModel.Dish" Role="Dish" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MenuSubcategory">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Dish">
+              <PropertyRef Name="MenuID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DishPrices_Dish">
+          <End Type="PZModel.Dish" Role="Dish" Multiplicity="1" />
+          <End Type="PZModel.DishPrices" Role="DishPrices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dish">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DishPrices">
+              <PropertyRef Name="DishID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DishRatings_Dish">
+          <End Type="PZModel.Dish" Role="Dish" Multiplicity="1" />
+          <End Type="PZModel.DishRatings" Role="DishRatings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dish">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DishRatings">
+              <PropertyRef Name="DishID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DishRatings_User">
+          <End Type="PZModel.User" Role="User" Multiplicity="1" />
+          <End Type="PZModel.DishRatings" Role="DishRatings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DishRatings">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Menu">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Category" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MenuSubcategory" Relationship="PZModel.FK_MenuSubcategory_Menu" FromRole="Menu" ToRole="MenuSubcategory" />
+        </EntityType>
+        <Association Name="FK_MenuSubcategory_Menu">
+          <End Type="PZModel.Menu" Role="Menu" Multiplicity="1" />
+          <End Type="PZModel.MenuSubcategory" Role="MenuSubcategory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Menu">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="Dish">
+            <Dependent Role="MenuSubcategory">
               <PropertyRef Name="MenuID" />
             </Dependent>
           </ReferentialConstraint>
@@ -502,16 +692,13 @@
           <EntitySetMapping Name="Dish">
             <EntityTypeMapping TypeName="PZModel.Dish">
               <MappingFragment StoreEntitySet="Dish">
-                <ScalarProperty Name="MenuID" ColumnName="MenuID" />
+                <ScalarProperty Name="SubcategoryID" ColumnName="SubcategoryID" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+                <ScalarProperty Name="NameID" ColumnName="NameID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="PromotionalPrice" ColumnName="PromotionalPrice" />
-                <ScalarProperty Name="PicPath" ColumnName="PicPath" />
                 <ScalarProperty Name="Rating" ColumnName="Rating" />
-                <ScalarProperty Name="IsServed" ColumnName="IsServed" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -572,7 +759,6 @@
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Surname" ColumnName="Surname" />
                 <ScalarProperty Name="Adress" ColumnName="Adress" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="Age" ColumnName="Age" />
                 <ScalarProperty Name="Sex" ColumnName="Sex" />
               </MappingFragment>
@@ -594,10 +780,38 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="DishPrices">
+            <EntityTypeMapping TypeName="PZModel.DishPrices">
+              <MappingFragment StoreEntitySet="DishPrices">
+                <ScalarProperty Name="DishID" ColumnName="DishID" />
+                <ScalarProperty Name="DateTo" ColumnName="DateTo" />
+                <ScalarProperty Name="DateFrom" ColumnName="DateFrom" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DishRatings">
+            <EntityTypeMapping TypeName="PZModel.DishRatings">
+              <MappingFragment StoreEntitySet="DishRatings">
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="DishID" ColumnName="DishID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MenuSubcategory">
+            <EntityTypeMapping TypeName="PZModel.MenuSubcategory">
+              <MappingFragment StoreEntitySet="MenuSubcategory">
+                <ScalarProperty Name="MenuID" ColumnName="MenuID" />
+                <ScalarProperty Name="Subcategory" ColumnName="Subcategory" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Menu">
             <EntityTypeMapping TypeName="PZModel.Menu">
               <MappingFragment StoreEntitySet="Menu">
-                <ScalarProperty Name="Subcategory" ColumnName="Subcategory" />
                 <ScalarProperty Name="Category" ColumnName="Category" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

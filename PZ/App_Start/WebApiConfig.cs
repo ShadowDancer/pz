@@ -10,11 +10,10 @@ namespace PZ
     {
         public static void Register(HttpConfiguration configuration)
         {
-            configuration.Routes.MapHttpRoute("API Default", "api/{controller}/{id}",
-                new { id = RouteParameter.Optional });
-            
+            configuration.Routes.MapHttpRoute("API Default", "api/{controller}/{type}");
+            configuration.Routes.MapHttpRoute("API Extended", "api/{controller}/{type}/{id}");
 
-
+            var configurationGlobal = GlobalConfiguration.Configuration;
         }
 
         public static string UrlPrefix { get { return "api"; } }

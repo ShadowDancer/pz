@@ -75,6 +75,38 @@
             @Html.DisplayFor(model => model.IsServed)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.NameID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NameID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ImageUrl)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Menu.Category)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Menu.Category)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MenuSubcategory.Subcategory)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MenuSubcategory.Subcategory)
+        </dd>
+
     </dl>
 
     @using (Html.BeginForm()) {
