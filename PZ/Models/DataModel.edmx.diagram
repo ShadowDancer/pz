@@ -22,12 +22,12 @@
         <EntityTypeShape EntityType="PZModel.DishPrices" Width="1.5" PointX="13.375" PointY="5.75" />
         <EntityTypeShape EntityType="PZModel.DishRatings" Width="1.5" PointX="13.375" PointY="8.875" />
         <EntityTypeShape EntityType="PZModel.MenuSubcategory" Width="1.5" PointX="8.25" PointY="7.875" />
-        <AssociationConnector Association="PZModel.FK_Dish_MenuSubcategory" />
         <AssociationConnector Association="PZModel.FK_DishPrices_Dish" />
-        <AssociationConnector Association="PZModel.FK_DishRatings_Dish" />
         <AssociationConnector Association="PZModel.FK_DishRatings_User" />
         <EntityTypeShape EntityType="PZModel.Menu" Width="1.5" PointX="8.375" PointY="4.125" />
         <AssociationConnector Association="PZModel.FK_MenuSubcategory_Menu" />
+        <AssociationConnector Association="PZModel.FK_Dish_MenuSubcategory1" />
+        <AssociationConnector Association="PZModel.DishDishRatings" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

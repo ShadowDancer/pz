@@ -2,13 +2,44 @@
 @using PZ.Models
 
 @section Head{
+
+
     <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        var headers = {};
+
+        headers['__RequestVerificationToken'] = token;
+
+
+
         $(function () {
-            $(".accordion").accordion();
+            $(".accordion").accordion(
+
+
+                );
         });
         $(function () {
             $("#tabs").tabs();
         });
+
+        $.fn.editable.defaults.mode = 'popup';
+        $(document).ready(function () {
+            $('.EditableSection').editable({
+                headers: headers,
+                toggle: 'manual',
+            });
+
+            $('.EditableTrigger').click(function (e) {
+                e.stopPropagation();
+                $(this).prev().editable('toggle');
+            });
+
+            $('.EditableReaload').on('save', function (e, params) {
+                window.location.reload(true);
+            });
+        });
+
 
 
     </script>
@@ -24,17 +55,27 @@
     <ul>
         @foreach (MenuViewModel menu in Model.Menus)
         {
-            <li><a href="#tab@(menu.ID)">@(menu.Description)</a></li>
+            <li>
+                @U.XEditableTrigger(menu.ID.ToString(), menu.Description, @Url.Action("_EditMenuDescription"),
+                @<a href="#tab@(menu.ID)">@(menu.Description)</a>)
+            </li>
         }
+
+        @U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditMenuDescription"),
+        @<a href="#">+</a>
+                          )
     </ul>
 
     @foreach (MenuViewModel menu in Model.Menus)
     {
         <div id="tab@(menu.ID)">
             <div class="accordion">
-                @foreach(SubmenuViewModel submenu in menu.Submenus)
+                @foreach (SubmenuViewModel submenu in menu.Submenus)
                 {
-                    <h3>@(submenu.Description)</h3>
+                    <h3>
+                        @U.XEditableTrigger(submenu.ID.ToString(), submenu.Description, @Url.Action("_EditSubmenuDescription"),
+                        @<span>@submenu.Description</span>)
+                    </h3>
                     <div>
                         <table class="table">
                             <thead>
@@ -45,7 +86,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach(DishViewModel dish in submenu.Dishes)
+                                @foreach (DishViewModel dish in submenu.Dishes)
                                 {
                                     <tr>
                                         <td>@(dish.Name)</td>
@@ -57,6 +98,11 @@
                         </table>
                     </div>
                 }
+                <h3>
+                    @U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditSubmenuDescription"),
+                    @<a href="#">+</a>)
+                </h3>
+                <div></div>
             </div>
         </div>
     }

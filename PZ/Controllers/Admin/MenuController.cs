@@ -51,7 +51,7 @@ namespace PZ.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="ID,Category,Subcategory")] Menu menu)
+        public ActionResult Create([Bind(Include = "ID,Category,Subcategory")] Menu menu)
         {
             if (ModelState.IsValid)
             {
@@ -78,12 +78,61 @@ namespace PZ.Controllers
             return View(menu);
         }
 
+        [HttpPost]
+        public ActionResult _EditMenuDescription(string pk, string value)
+        {
+            using (PZEntities db = new PZEntities())
+            {
+                int id = 0;
+                if (!string.IsNullOrEmpty(pk))
+                {
+                    id = int.Parse(pk);
+                }
+                var menu = db.Menu.FirstOrDefault(n => n.ID == id);
+                if (menu == null)
+                {
+                    menu = new Menu();
+                    db.Menu.Add(menu);
+                }
+
+                menu.Category = value;
+                db.SaveChanges();
+            }
+
+
+            return null;
+        }
+
+        [HttpPost]
+        public ActionResult _EditSubmenuDescription(string pk, string value)
+        {
+            using (PZEntities db = new PZEntities())
+            {
+                int id = 0;
+                if (!string.IsNullOrEmpty(pk))
+                {
+                    id = int.Parse(pk);
+                }
+                var subMenu = db.MenuSubcategory.FirstOrDefault(n => n.ID == id);
+                if (subMenu == null)
+                {
+                    subMenu = new MenuSubcategory();
+                    db.MenuSubcategory.Add(subMenu);
+                }
+
+                subMenu.Subcategory = value;
+                db.SaveChanges();
+            }
+
+
+            return null;
+        }
         // POST: /Default1/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include="ID,Category,Subcategory")] Menu menu)
+        public ActionResult Edit([Bind(Include = "ID,Category,Subcategory")] Menu menu)
         {
             if (ModelState.IsValid)
             {

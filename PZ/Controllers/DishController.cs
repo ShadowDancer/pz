@@ -18,7 +18,7 @@ namespace PZ.Controllers
         // GET: /Dish/
         public async Task<ActionResult> Index()
         {
-            var dish = db.Dish.Include(d => d.MenuID).Include(d => d.MenuSubcategory);
+            var dish = db.Dish.Include(d => d.SubcategoryID).Include(d => d.SubcategoryID);
             return View(await dish.ToListAsync());
         }
 
@@ -59,8 +59,8 @@ namespace PZ.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.MenuID = new SelectList(db.Menu, "ID", "Category", dish.MenuID);
-            ViewBag.MenuID = new SelectList(db.MenuSubcategory, "ID", "Subcategory", dish.MenuID);
+            ViewBag.MenuID = new SelectList(db.Menu, "ID", "Category", dish.SubcategoryID);
+            ViewBag.MenuID = new SelectList(db.MenuSubcategory, "ID", "Subcategory", dish.SubcategoryID);
             return View(dish);
         }
 
@@ -76,8 +76,8 @@ namespace PZ.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.MenuID = new SelectList(db.Menu, "ID", "Category", dish.MenuID);
-            ViewBag.MenuID = new SelectList(db.MenuSubcategory, "ID", "Subcategory", dish.MenuID);
+            ViewBag.MenuID = new SelectList(db.Menu, "ID", "Category", dish.SubcategoryID);
+            ViewBag.MenuID = new SelectList(db.MenuSubcategory, "ID", "Subcategory", dish.SubcategoryID);
             return View(dish);
         }
 
@@ -94,8 +94,8 @@ namespace PZ.Controllers
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.MenuID = new SelectList(db.Menu, "ID", "Category", dish.MenuID);
-            ViewBag.MenuID = new SelectList(db.MenuSubcategory, "ID", "Subcategory", dish.MenuID);
+            ViewBag.MenuID = new SelectList(db.Menu, "ID", "Category", dish.SubcategoryID);
+            ViewBag.MenuID = new SelectList(db.MenuSubcategory, "ID", "Subcategory", dish.SubcategoryID);
             return View(dish);
         }
 

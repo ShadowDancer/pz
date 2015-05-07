@@ -14,6 +14,7 @@ namespace PZ
             configuration.Routes.MapHttpRoute("API Extended", "api/{controller}/{type}/{id}");
 
             var configurationGlobal = GlobalConfiguration.Configuration;
+            configurationGlobal.Formatters.Remove(configurationGlobal.Formatters.XmlFormatter);
         }
 
         public static string UrlPrefix { get { return "api"; } }

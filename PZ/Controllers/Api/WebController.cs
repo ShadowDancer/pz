@@ -19,7 +19,6 @@ namespace PZ.Controllers
         // GET api/<controller>/type/id
         public object Get(string type, int? id)
         {
-            object result = null;
             using (var db = new PZ.Models.PZEntities())
             {
                 switch (type)
@@ -33,7 +32,7 @@ namespace PZ.Controllers
                                             //name = d.Name,
                                             //price = d.Price,
                                             description = d.Description,
-                                            menuid = d.MenuID,
+                                            menuid = d.SubcategoryID,
                                         };
                             if (id != null)
                                 query = query.Where(n => n.id == id);
@@ -42,17 +41,7 @@ namespace PZ.Controllers
                         }
                     case "Menu":
                         {
-                            var query = from d in db.Menu
-                                        select new MenuDTO
-                                        {
-                                            id = d.ID,
-                                            category = d.Category,
-                                         //   subcategory = d.Subcategory,
-                                        };
-                            if (id != null)
-                                query = query.Where(n => n.id == id);
-
-                            return new MenuBundleDTO() { menus=query.ToArray(), };
+                            return(object) new PZ.Models.MenuBundleViewModel().Menus;
                         }
                 }
             }

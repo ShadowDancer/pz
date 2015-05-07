@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Configuration;
+using System.Runtime.Serialization.Diagnostics;
+using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Json;
 
 namespace PZ.Models
 {
     public class MenuBundleViewModel
     {
+
         public MenuBundleViewModel()
         {
             using (PZEntities db = new PZEntities())
@@ -26,7 +32,7 @@ namespace PZ.Models
                                                 MenuID = submenu.MenuID,
                                                 Description = submenu.Subcategory,
                                                 Dishes = (from dish in db.Dish
-                                                          where dish.MenuID == submenu.ID
+                                                          where dish.SubcategoryID == submenu.ID
                                                           select new DishViewModel()
                                                           {
                                                               ID = dish.ID,
