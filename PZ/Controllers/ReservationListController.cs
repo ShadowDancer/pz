@@ -14,6 +14,26 @@ namespace PZ.Controllers
     {
         private PZEntities db = new PZEntities();
 
+		
+		public new ActionResult View()
+		{
+			DateTime requestDate = DateTime.Now;
+			using(System.IO.StreamReader sr = new System.IO.StreamReader(Request.InputStream))
+			{
+				string inputDate = null;
+				inputDate = sr.ReadToEnd();
+				var post = HttpUtility.ParseQueryString(inputDate);
+
+				if(!string.IsNullOrEmpty(post["value"]))
+				{
+					requestDate = DateTime.Parse(post["value"]);
+				}
+			}
+
+
+			return View(new ReservationListViewModel(requestDate));
+		}
+
         // GET: /ReservationList/
         public ActionResult Index()
         {

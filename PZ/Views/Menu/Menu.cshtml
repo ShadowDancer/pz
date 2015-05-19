@@ -4,106 +4,105 @@
 @section Head{
 
 
-    <script>
-        var token = $('input[name="__RequestVerificationToken"]').val();
+	<script>
+		var token = $('input[name="__RequestVerificationToken"]').val();
 
-        var headers = {};
+		var headers = {};
 
-        headers['__RequestVerificationToken'] = token;
-
-
-
-        $(function () {
-            $(".accordion").accordion(
-
-
-                );
-        });
-        $(function () {
-            $("#tabs").tabs();
-        });
-
-        $.fn.editable.defaults.mode = 'popup';
-        $(document).ready(function () {
-            $('.EditableSection').editable({
-                headers: headers,
-                toggle: 'manual',
-            });
-
-            $('.EditableTrigger').click(function (e) {
-                e.stopPropagation();
-                $(this).prev().editable('toggle');
-            });
-
-            $('.EditableReaload').on('save', function (e, params) {
-                window.location.reload(true);
-            });
-        });
+		headers['__RequestVerificationToken'] = token;
 
 
 
-    </script>
+		$(function () {
+			$("#tabs").tabs();
+		});
+
+		$.fn.editable.defaults.mode = 'popup';
+		$(document).ready(function () {
+			$('.EditableSection').editable({
+				headers: headers,
+				toggle: 'manual',
+				success:
+        (function () {
+        	$("#tabs").tabs('destroy').tabs();
+        }),
+
+			});
+
+			$('.EditableTrigger').click(function (e) {
+				e.stopPropagation();
+				$(this).prev().editable('toggle');
+			});
+
+			$('.EditableReaload').on('save', function (e, params) {
+				window.location.reload(true);
+			});
+		});
+
+
+
+	</script>
 }
 
 @{
-    ViewBag.Title = "Menu";
+	ViewBag.Title = "Menu";
 }
 
 <h2>Menu</h2>
 
 <div id="tabs">
-    <ul>
-        @foreach (MenuViewModel menu in Model.Menus)
-        {
-            <li>
-                @U.XEditableTrigger(menu.ID.ToString(), menu.Description, @Url.Action("_EditMenuDescription"),
-                @<a href="#tab@(menu.ID)">@(menu.Description)</a>)
-            </li>
-        }
+	<ul>
+		@foreach (MenuViewModel menu in Model.Menus)
+		{
+			<li>
+				@U.XEditableTrigger(menu.ID.ToString(), menu.Description, @Url.Action("_EditMenuDescription"),
+				@<a href="#tab@(menu.ID)">@(menu.Description)</a>)
+			</li>
+		}
 
-        @U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditMenuDescription"),
-        @<a href="#">+</a>
-                          )
-    </ul>
+		@U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditMenuDescription"),
+		@<a href="#">+</a>
+								   )
+	</ul>
 
-    @foreach (MenuViewModel menu in Model.Menus)
-    {
-        <div id="tab@(menu.ID)">
-            <div class="accordion">
-                @foreach (SubmenuViewModel submenu in menu.Submenus)
-                {
-                    <h3>
-                        @U.XEditableTrigger(submenu.ID.ToString(), submenu.Description, @Url.Action("_EditSubmenuDescription"),
-                        @<span>@submenu.Description</span>)
-                    </h3>
-                    <div>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Price</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (DishViewModel dish in submenu.Dishes)
-                                {
-                                    <tr>
-                                        <td>@(dish.Name)</td>
-                                        <td>@(dish.Price)</td>
-                                        <td>@Html.ActionLink("Order", "Order", new { id = dish.ID })</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                <h3>
-                    @U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditSubmenuDescription"),
-                    @<a href="#">+</a>)
-                </h3>
-                <div></div>
-            </div>
-        </div>
-    }
+	@foreach (MenuViewModel menu in Model.Menus)
+	{
+		<div id="tab@(menu.ID)">
+			<div class="accordion">
+				@foreach (SubmenuViewModel submenu in menu.Submenus)
+				{
+					<h3>
+						@U.XEditableTrigger(submenu.ID.ToString(), submenu.Description, @Url.Action("_EditSubmenuDescription"),
+						@<span>@submenu.Description</span>)
+					</h3>
+					<div>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Price</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (DishViewModel dish in submenu.Dishes)
+								{
+									<tr>
+										<td>@(dish.Name)</td>
+										<td>@(dish.Price)</td>
+										<td>@Html.ActionLink("Order", "Order", new { id = dish.ID })</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				}
+				<h3>
+					@U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditSubmenuDescription"),
+					@<a href="#">+</a>)
+				</h3>
+				<div></div>
+			</div>
+		</div>
+	}
 </div>

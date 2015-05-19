@@ -10,22 +10,13 @@
 namespace PZ.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class SubOrder
+    public partial class sp_helpdiagrams_Result
     {
-        public SubOrder()
-        {
-            this.ShoppingCart = new HashSet<ShoppingCart>();
-        }
-    
+        public string Database { get; set; }
+        public string Name { get; set; }
         public int ID { get; set; }
-        public Nullable<int> OrderID { get; set; }
-        public Nullable<int> DishID { get; set; }
-        public Nullable<int> Quantity { get; set; }
-    
-        public virtual Dish Dish { get; set; }
-        public virtual Order Order { get; set; }
-        public virtual ICollection<ShoppingCart> ShoppingCart { get; set; }
+        public string Owner { get; set; }
+        public int OwnerID { get; set; }
     }
 }

@@ -12,20 +12,12 @@ namespace PZ.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class SubOrder
+    public partial class sysdiagrams
     {
-        public SubOrder()
-        {
-            this.ShoppingCart = new HashSet<ShoppingCart>();
-        }
-    
-        public int ID { get; set; }
-        public Nullable<int> OrderID { get; set; }
-        public Nullable<int> DishID { get; set; }
-        public Nullable<int> Quantity { get; set; }
-    
-        public virtual Dish Dish { get; set; }
-        public virtual Order Order { get; set; }
-        public virtual ICollection<ShoppingCart> ShoppingCart { get; set; }
+        public string name { get; set; }
+        public int principal_id { get; set; }
+        public int diagram_id { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }

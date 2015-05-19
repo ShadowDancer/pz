@@ -10,15 +10,10 @@
 namespace PZ.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class DishPrices
+    public partial class sp_helpdiagramdefinition_Result
     {
-        public decimal Price { get; set; }
-        public System.DateTime DateFrom { get; set; }
-        public Nullable<System.DateTime> DateTo { get; set; }
-        public int DishID { get; set; }
-    
-        public virtual Dish Dish { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }

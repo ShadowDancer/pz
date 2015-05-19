@@ -19,6 +19,7 @@ namespace PZ.Models
             this.SubOrder = new HashSet<SubOrder>();
             this.DishPrices = new HashSet<DishPrices>();
             this.DishRatings = new HashSet<DishRatings>();
+            this.ShoppingCart = new HashSet<ShoppingCart>();
         }
     
         public int ID { get; set; }
@@ -33,5 +34,6 @@ namespace PZ.Models
         public virtual ICollection<DishPrices> DishPrices { get; set; }
         public virtual MenuSubcategory MenuSubcategory1 { get; set; }
         public virtual ICollection<DishRatings> DishRatings { get; set; }
+        public virtual ICollection<ShoppingCart> ShoppingCart { get; set; }
     }
 }
