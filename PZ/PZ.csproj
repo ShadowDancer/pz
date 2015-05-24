@@ -249,6 +249,7 @@
     <Compile Include="Models\ShoppingCart.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ShoppingCartViewModel.cs" />
     <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
@@ -264,7 +265,6 @@
     <Compile Include="Models\Table.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ShoppingCartViewModel.cs" />
     <Compile Include="Models\TableViewModel.cs" />
     <Compile Include="Models\User.cs">
       <DependentUpon>DataModel.tt</DependentUpon>

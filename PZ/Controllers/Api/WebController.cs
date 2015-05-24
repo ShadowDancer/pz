@@ -71,81 +71,207 @@ namespace PZ.Controllers
 		[HttpPost]
 		public async Task<HttpResponseMessage> Post(HttpRequestMessage request)
 		{
-			var inputText = request.Content.ReadAsStringAsync().Result;
-
-			PostRequestDTO input = null;
 			try
 			{
-				input = JsonConvert.DeserializeObject<PostRequestDTO>(inputText);
-				if (input == null || string.IsNullOrEmpty(input.Action))
+				var inputText = request.Content.ReadAsStringAsync().Result;
+
+				PostRequestDTO input = null;
+				try
 				{
-					throw new Exception();
+					input = JsonConvert.DeserializeObject<PostRequestDTO>(inputText);
+					if (input == null || string.IsNullOrEmpty(input.Action))
+					{
+						throw new Exception();
+					}
+				}
+				catch
+				{
+					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne zapytanie"))) };
+				}
+
+				UserManager<UserViewModel> UserManager = new UserManager<UserViewModel>(new UserStore<UserViewModel>(new ApplicationDbContext()));
+				if (input.Action == "createAccount")
+				{
+					return await CreateAccount(input, UserManager);
+				}
+
+
+
+				var user = await UserManager.FindAsync(input.Username, input.Password);
+				if (user == null)
+				{
+					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane logowania"))) };
+				}
+
+				switch (input.Action)
+				{
+					case "order":
+						return CreateOrder(input, user);
+					case "reserve":
+						return CreateReservation(input, user);
+					case "addToCart":
+						return AddToCart(input);
+					case "getCart":
+						return GetCart(input);
+					case "example":
+						return CreateExample(input);
+					default:
+						return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "nieznana akcja"))) };
 				}
 			}
-			catch
+			catch (Exception ex)
 			{
-				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne zapytanie"))) };
+				return ReturnMessage(false, "błąd podczas przetwarzania zapytania: " + ex.Message);
+			}
+		}
+
+		private static HttpResponseMessage GetCart(PostRequestDTO input)
+		{
+			return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new ShoppingCartViewModel(input.Username))) };
+		}
+
+		private static HttpResponseMessage AddToCart(PostRequestDTO input)
+		{
+			if (input.CartAmount == null || input.CartItems == null || input.CartItems.Count == 0 || input.CartItems != input.CartAmount)
+			{
+				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane"))) };
 			}
 
-			UserManager<UserViewModel> UserManager = new UserManager < UserViewModel > (new UserStore<UserViewModel>(new ApplicationDbContext()));
-			var user = await UserManager.FindAsync(input.Username, input.Password);
-			if (user == null)
+			try
 			{
-				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane logowania"))) };
+				using (PZEntities db = new PZEntities())
+				{
+					var User = db.User.FirstOrDefault(n => n.Email == input.Username);
+
+					for (int i = 0; i < input.CartAmount.Count; i++)
+					{
+						User.ShoppingCart.Add(new ShoppingCart() { DishID = input.CartItems[i], Quantity = input.CartItems[i], UserID = User.ID });
+					}
+
+					db.SaveChanges();
+				}
 			}
-			
-			switch (input.Action)
+			catch (Exception ex)
 			{
-				case "reserve":
-					if (input.ReservationLength == null || input.ReservationHour == null || input.ReservationDate == null)
-					{
-						return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane"))) };
-					}
+				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, ex.Message))) };
+			}
 
-					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(true, ""))) };
-				case "addToCart":
-					if (input.CartAmount == null || input.CartItems == null || input.CartItems.Count == 0 || input.CartItems != input.CartAmount)
-					{
-						return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane"))) };
-					}
+			return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(true, ""))) };
+		}
 
+		private async Task<HttpResponseMessage> CreateAccount(PostRequestDTO input, UserManager<UserViewModel> UserManager)
+		{
+			var result = await UserManager.CreateAsync(new UserViewModel() { UserName = input.Username }, input.Password);
+			if (result.Succeeded)
+			{
+				User newUser = new User();
+				newUser.Email = input.Username;
+
+				using (PZEntities db = new PZEntities())
+				{
+					db.User.Add(newUser);
 					try
 					{
-						using (PZEntities db = new PZEntities())
-						{
-							var User = db.User.FirstOrDefault(n => n.Email == input.Username);
-
-							for (int i = 0; i < input.CartAmount.Count; i++)
-							{
-								User.ShoppingCart.Add(new ShoppingCart() { DishID = input.CartItems[i], Quantity = input.CartItems[i], UserID = User.ID });
-							}
-
-							db.SaveChanges();
-						}
+						db.SaveChanges();
+						return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(true, ""))) };
 					}
 					catch(Exception ex)
 					{
-						return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, ex.Message))) };
+						return ReturnMessage(false, ex.Message);
 					}
+				}
+			}
+			else
+			{
+				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "tworzenie konta nie powiodło się:" + string.Join(";", result.Errors)))) };
+			}
+		}
 
-					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(true, ""))) };
-				case "getCart":
-					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new ShoppingCartViewModel(input.Username))) };
-				case "example":
-					input.Username = "Username";
-					input.Password = "Password";
-					input.ReservationDate = DateTime.Now.Date;
-					input.ReservationHour = 10;
-					input.ReservationLength = 12;
-					input.CartItems = new List<int>() { 1, 2, 3 };
-					input.CartAmount = new List<int>() { 5, 10, 15 };
-					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(input)) };
-				default:
-					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "nieznana akcja"))) };
+		private static HttpResponseMessage CreateReservation(PostRequestDTO input, UserViewModel user)
+		{
+			if (input.ReservationLength == null || input.ReservationHour == null || input.ReservationDate == null || input.Table == null)
+			{
+				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane"))) };
 			}
 
+			using (PZEntities db = new PZEntities())
+			{
+				Reservation_List newReservarion = new Reservation_List();
+				newReservarion.TableID = input.Table;
+				newReservarion.UserID = user.ID;
+				newReservarion.From = input.ReservationDate.AddHours((double)input.ReservationHour);
+				newReservarion.To = newReservarion.From.AddHours((double)input.ReservationLength);
+				db.Reservation_List.Add(newReservarion);
+				try
+				{
+					db.SaveChanges();
+				}
+				catch (Exception ex)
+				{
+					return ReturnMessage(false, "Błąd podczas tworzenia rezerwacji:\r\n" + ex.ToString());
+				}
+			}
 
-			return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "błąd serwera"))) };
+			return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(true, ""))) };
+		}
+
+		private static HttpResponseMessage CreateExample(PostRequestDTO input)
+		{
+			input.Username = "Username";
+			input.Password = "Password";
+			input.ReservationDate = DateTime.Now.Date;
+			input.ReservationHour = 10;
+			input.ReservationLength = 12;
+			input.CartItems = new List<int>() { 1, 2, 3 };
+			input.CartAmount = new List<int>() { 5, 10, 15 };
+			return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(input)) };
+		}
+
+		private static HttpResponseMessage CreateOrder(PostRequestDTO input, UserViewModel user)
+		{
+			if (input.CartAmount == null || input.CartItems == null || input.CartItems.Count == 0 || input.CartItems.Count != input.CartAmount.Count || input.Table == null)
+			{
+				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane"))) };
+			}
+
+			using (PZEntities db = new PZEntities())
+			{
+				Order newOrder = new Order() { IssueDate = DateTime.Now, State = "Open", TableID = (int)input.Table, UserID = user.ID };
+				db.Order.Add(newOrder);
+				try
+				{
+					db.SaveChanges();
+				}
+				catch (Exception ex)
+				{
+					return ReturnMessage(false, "Błąd podczas tworzenia zamówienia:\r\n" + ex.ToString());
+				}
+
+				for (int i = 0; i < input.CartItems.Count; i++)
+				{
+					SubOrder subOrder = new SubOrder();
+					subOrder.DishID = input.CartItems[i];
+					subOrder.Quantity = input.CartAmount[i];
+					subOrder.OrderID = newOrder.ID;
+					db.SubOrder.Add(subOrder);
+				}
+
+				try
+				{
+					db.SaveChanges();
+				}
+				catch (Exception ex)
+				{
+					return ReturnMessage(false, "Błąd podczas tworzenia pozycji zamówienia:\r\n" + ex.ToString());
+				}
+			}
+
+			return ReturnMessage(true, "");
+		}
+
+		private static HttpResponseMessage ReturnMessage(bool result, string message)
+		{
+			return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(result, message))) };
 		}
 
 		// PUT api/<controller>/5

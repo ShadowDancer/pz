@@ -17,7 +17,6 @@ namespace PZ.Models
         public Order()
         {
             this.SubOrder = new HashSet<SubOrder>();
-            this.ShoppingCart = new HashSet<ShoppingCart>();
         }
     
         public int ID { get; set; }
@@ -33,6 +32,5 @@ namespace PZ.Models
         public virtual User User { get; set; }
         public virtual Waiter Waiter { get; set; }
         public virtual ICollection<SubOrder> SubOrder { get; set; }
-        public virtual ICollection<ShoppingCart> ShoppingCart { get; set; }
     }
 }

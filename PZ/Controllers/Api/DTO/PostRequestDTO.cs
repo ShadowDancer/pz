@@ -37,5 +37,6 @@ namespace PZ.Controllers.Api.DTO
 		public DateTime ReservationDate { get; set; }
 		public int? ReservationHour { get; set; }
 		public int? ReservationLength { get; set; }
+		public int? Table { get; set; }
 	}
 }

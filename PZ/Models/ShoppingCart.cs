@@ -16,14 +16,11 @@ namespace PZ.Models
     {
         public int ID { get; set; }
         public int UserID { get; set; }
-        public int OrderID { get; set; }
-        public int SuborderID { get; set; }
         public int DishID { get; set; }
         public int Quantity { get; set; }
     
         public virtual Dish Dish { get; set; }
-        public virtual Order Order { get; set; }
-        public virtual SubOrder SubOrder { get; set; }
         public virtual User User { get; set; }
+        public virtual SubOrder SubOrder { get; set; }
     }
 }

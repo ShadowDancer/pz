@@ -88,8 +88,6 @@
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="UserID" Type="int" Nullable="false" />
-          <Property Name="OrderID" Type="int" Nullable="false" />
-          <Property Name="SuborderID" Type="int" Nullable="false" />
           <Property Name="DishID" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
         </EntityType>
@@ -125,14 +123,14 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="City" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="Comment" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="City" Type="varchar" MaxLength="255" />
+          <Property Name="Comment" Type="varchar" MaxLength="255" />
           <Property Name="Email" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
           <Property Name="Phone" Type="varchar" MaxLength="255" />
           <Property Name="Reputation" Type="numeric" Precision="3" Scale="2" />
-          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="Surname" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" />
+          <Property Name="Surname" Type="varchar" MaxLength="255" />
           <Property Name="Adress" Type="varchar" MaxLength="255" />
           <Property Name="Age" Type="int" />
           <Property Name="Sex" Type="varchar" MaxLength="8" />
@@ -308,18 +306,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ShoppingCart_Order">
-          <End Role="Order" Type="Self.Order" Multiplicity="1" />
-          <End Role="ShoppingCart" Type="Self.ShoppingCart" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Order">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ShoppingCart">
-              <PropertyRef Name="OrderID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ShoppingCart_SubOrder">
           <End Role="SubOrder" Type="Self.SubOrder" Multiplicity="1" />
           <End Role="ShoppingCart" Type="Self.ShoppingCart" Multiplicity="*" />
@@ -445,10 +431,6 @@
             <End Role="Dish" EntitySet="Dish" />
             <End Role="ShoppingCart" EntitySet="ShoppingCart" />
           </AssociationSet>
-          <AssociationSet Name="FK_ShoppingCart_Order" Association="Self.FK_ShoppingCart_Order">
-            <End Role="Order" EntitySet="Order" />
-            <End Role="ShoppingCart" EntitySet="ShoppingCart" />
-          </AssociationSet>
           <AssociationSet Name="FK_ShoppingCart_SubOrder" Association="Self.FK_ShoppingCart_SubOrder">
             <End Role="SubOrder" EntitySet="SubOrder" />
             <End Role="ShoppingCart" EntitySet="ShoppingCart" />
@@ -495,7 +477,6 @@
           <NavigationProperty Name="User" Relationship="Self.FK__Order__UserID__239E4DCF" FromRole="Order" ToRole="User" />
           <NavigationProperty Name="Waiter" Relationship="Self.FK__Order__WaiterID__25869641" FromRole="Order" ToRole="Waiter" />
           <NavigationProperty Name="SubOrder" Relationship="Self.FK__SubOrder__OrderI__29572725" FromRole="Order" ToRole="SubOrder" />
-          <NavigationProperty Name="ShoppingCart" Relationship="PZModel.FK_ShoppingCart_Order" FromRole="Order" ToRole="ShoppingCart" />
         </EntityType>
         <EntityType Name="Reservation_List">
           <Key>
@@ -536,14 +517,14 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
           <Property Name="Phone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Reputation" Type="Decimal" Precision="3" Scale="2" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Surname" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Surname" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Adress" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Age" Type="Int32" />
           <Property Name="Sex" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
@@ -752,16 +733,12 @@
             <End Role="Dish" EntitySet="Dish" />
             <End Role="ShoppingCart" EntitySet="ShoppingCart" />
           </AssociationSet>
-          <AssociationSet Name="FK_ShoppingCart_Order" Association="PZModel.FK_ShoppingCart_Order">
-            <End Role="Order" EntitySet="Order" />
+          <AssociationSet Name="FK_ShoppingCart_User" Association="PZModel.FK_ShoppingCart_User">
+            <End Role="User" EntitySet="User" />
             <End Role="ShoppingCart" EntitySet="ShoppingCart" />
           </AssociationSet>
           <AssociationSet Name="FK_ShoppingCart_SubOrder" Association="PZModel.FK_ShoppingCart_SubOrder">
             <End Role="SubOrder" EntitySet="SubOrder" />
-            <End Role="ShoppingCart" EntitySet="ShoppingCart" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ShoppingCart_User" Association="PZModel.FK_ShoppingCart_User">
-            <End Role="User" EntitySet="User" />
             <End Role="ShoppingCart" EntitySet="ShoppingCart" />
           </AssociationSet>
         </EntityContainer>
@@ -900,14 +877,11 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
-          <Property Name="OrderID" Type="Int32" Nullable="false" />
-          <Property Name="SuborderID" Type="Int32" Nullable="false" />
           <Property Name="DishID" Type="Int32" Nullable="false" />
           <Property Name="Quantity" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Dish" Relationship="PZModel.FK_ShoppingCart_Dish" FromRole="ShoppingCart" ToRole="Dish" />
-          <NavigationProperty Name="Order" Relationship="PZModel.FK_ShoppingCart_Order" FromRole="ShoppingCart" ToRole="Order" />
-          <NavigationProperty Name="SubOrder" Relationship="PZModel.FK_ShoppingCart_SubOrder" FromRole="ShoppingCart" ToRole="SubOrder" />
           <NavigationProperty Name="User" Relationship="PZModel.FK_ShoppingCart_User" FromRole="ShoppingCart" ToRole="User" />
+          <NavigationProperty Name="SubOrder" Relationship="PZModel.FK_ShoppingCart_SubOrder" FromRole="ShoppingCart" ToRole="SubOrder" />
         </EntityType>
         <Association Name="FK_ShoppingCart_Dish">
           <End Type="PZModel.Dish" Role="Dish" Multiplicity="1" />
@@ -921,15 +895,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ShoppingCart_Order">
-          <End Type="PZModel.Order" Role="Order" Multiplicity="1" />
+        <Association Name="FK_ShoppingCart_User">
+          <End Type="PZModel.User" Role="User" Multiplicity="1" />
           <End Type="PZModel.ShoppingCart" Role="ShoppingCart" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Order">
+            <Principal Role="User">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="ShoppingCart">
-              <PropertyRef Name="OrderID" />
+              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -942,18 +916,6 @@
             </Principal>
             <Dependent Role="ShoppingCart">
               <PropertyRef Name="Quantity" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ShoppingCart_User">
-          <End Type="PZModel.User" Role="User" Multiplicity="1" />
-          <End Type="PZModel.ShoppingCart" Role="ShoppingCart" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ShoppingCart">
-              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1140,8 +1102,6 @@
               <MappingFragment StoreEntitySet="ShoppingCart">
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="DishID" ColumnName="DishID" />
-                <ScalarProperty Name="SuborderID" ColumnName="SuborderID" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
