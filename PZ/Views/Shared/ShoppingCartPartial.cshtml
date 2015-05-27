@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNet.Identity
+@using PZ.Models
+@if (Request.IsAuthenticated)
+{
+	<div>
+		@if (((UserViewModel)User.Identity).PZUser.ShoppingCart.Count > 0)
+		{
+			<h4>ShoppingCart</h4>
+			<dl class="dl-horizontal">
+				Masz @(model.Dishes.count) produktów w koszyku.
+			</dl>
+		}
+	</div>
+}

@@ -84,20 +84,27 @@ namespace PZ.Controllers
 						throw new Exception();
 					}
 				}
-				catch
+				catch(Exception ex)
 				{
-					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne zapytanie"))) };
+					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne zapytanie " + ex.Message ))) };
 				}
 
-				UserManager<UserViewModel> UserManager = new UserManager<UserViewModel>(new UserStore<UserViewModel>(new ApplicationDbContext()));
+				UserManager<UserViewModel> UserManager = (new UserManager<UserViewModel>(new UserStore<UserViewModel>(new ApplicationDbContext())));
+				UserManager.UserValidator = new UserValidator<UserViewModel>(UserManager) { AllowOnlyAlphanumericUserNames = false };
 				if (input.Action == "createAccount")
 				{
 					return await CreateAccount(input, UserManager);
 				}
 
-
-
-				var user = await UserManager.FindAsync(input.Username, input.Password);
+				UserViewModel user = null;
+				if (this.User != null)
+				{
+					user = (UserViewModel)this.User;
+				}
+				else
+				{
+					user = await UserManager.FindAsync(input.Username, input.Password);
+				}
 				if (user == null)
 				{
 					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane logowania"))) };
@@ -175,7 +182,7 @@ namespace PZ.Controllers
 						db.SaveChanges();
 						return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(true, ""))) };
 					}
-					catch(Exception ex)
+					catch (Exception ex)
 					{
 						return ReturnMessage(false, ex.Message);
 					}

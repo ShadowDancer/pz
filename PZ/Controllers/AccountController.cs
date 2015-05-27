@@ -18,6 +18,7 @@ namespace PZ.Controllers
         public AccountController()
             : this(new UserManager<UserViewModel>(new UserStore<UserViewModel>(new ApplicationDbContext())))
         {
+			UserManager.UserValidator =  new UserValidator<UserViewModel>(UserManager) { AllowOnlyAlphanumericUserNames = false };
         }
 
         public AccountController(UserManager<UserViewModel> userManager)

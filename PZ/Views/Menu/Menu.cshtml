@@ -39,7 +39,25 @@
 			});
 		});
 
+		$(document).ready(function () {
+			$(".dish_order").click(function (event) {
+				event.preventDefault();
+				addToCart(this.id);
+			});
+		});
 
+		var addToCart = function(id)
+		{
+			$.ajax({
+				method: "POST",
+				url: "../api/Web/post",
+				data: JSON.stringify({ Action: "addToCart", CartItems: [id], CartAmount: [1] })
+			})
+	  .done(function (msg) {
+	  	window.location.href = window.location.href;
+	  });
+
+		}
 
 	</script>
 }
@@ -62,7 +80,7 @@
 
 		@U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditMenuDescription"),
 		@<a href="#">+</a>
-								   )
+													 )
 	</ul>
 
 	@foreach (MenuViewModel menu in Model.Menus)
@@ -90,7 +108,7 @@
 									<tr>
 										<td>@(dish.Name)</td>
 										<td>@(dish.Price)</td>
-										<td>@Html.ActionLink("Order", "Order", new { id = dish.ID })</td>
+										<td><a id="@(dish.ID)" class="dish_order" href="#">Zamów</a></td>
 									</tr>
 								}
 							</tbody>
