@@ -97,9 +97,11 @@ namespace PZ.Controllers
 				}
 
 				UserViewModel user = null;
-				if (this.User != null)
+				if (this.User != null && this.User.Identity.IsAuthenticated)
 				{
-					user = (UserViewModel)this.User;
+
+
+					int x = 10;
 				}
 				else
 				{
@@ -243,7 +245,7 @@ namespace PZ.Controllers
 
 			using (PZEntities db = new PZEntities())
 			{
-				Order newOrder = new Order() { IssueDate = DateTime.Now, State = "Open", TableID = (int)input.Table, UserID = user.ID };
+				Order newOrder = new Order() { IssueDate = DateTime.Now, State = "1", TableID = (int)input.Table, UserID = user.PZUser.ID };
 				db.Order.Add(newOrder);
 				try
 				{
@@ -253,7 +255,7 @@ namespace PZ.Controllers
 				{
 					return ReturnMessage(false, "Błąd podczas tworzenia zamówienia:\r\n" + ex.ToString());
 				}
-
+				
 				for (int i = 0; i < input.CartItems.Count; i++)
 				{
 					SubOrder subOrder = new SubOrder();
@@ -262,7 +264,7 @@ namespace PZ.Controllers
 					subOrder.OrderID = newOrder.ID;
 					db.SubOrder.Add(subOrder);
 				}
-
+				
 				try
 				{
 					db.SaveChanges();

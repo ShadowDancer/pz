@@ -13,7 +13,6 @@ namespace PZ.Models
                 using (PZEntities db = new PZEntities())
                 {
                     var result = db.User.FirstOrDefault(n => n.Email == UserName);
-                    result = new User();
                     return result;
                 }
             }
