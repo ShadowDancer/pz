@@ -4,8 +4,10 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using PZ.Models;
 
 namespace PZ.Controllers
@@ -47,8 +49,9 @@ namespace PZ.Controllers
 
 	    public ActionResult OrderList()
 	    {
-
-		    return View(db.Order.Where(n => n.UserID == ));
+			
+			List<Order> orderList = db.Order.Where(n => n.User.Email == User.Identity.Name).ToList();
+			return View(orderList);
 	    }
 
 	    public ActionResult Suborder()

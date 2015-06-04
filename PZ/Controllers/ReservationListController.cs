@@ -37,8 +37,8 @@ namespace PZ.Controllers
         // GET: /ReservationList/
         public ActionResult Index()
         {
-            var reservation_list = db.Reservation_List.Include(r => r.Table).Include(r => r.User);
-            return View(reservation_list.ToList());
+            var reservationList = db.Reservation_List.Include(r => r.Table).Include(r => r.User);
+            return View(reservationList.ToList());
         }
 
         // GET: /ReservationList/Details/5

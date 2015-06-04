@@ -12,6 +12,8 @@ using PZ.Models;
 
 namespace PZ.Controllers
 {
+
+
     [Authorize]
     public class AccountController : Controller
     {
@@ -421,4 +423,12 @@ namespace PZ.Controllers
         }
         #endregion
     }
+
+	public static class userManagerExtension
+	{
+		public static UserManager<UserViewModel> GetUserManager(this Controller c)
+		{
+			return (new UserManager<UserViewModel>(new UserStore<UserViewModel>(new ApplicationDbContext())));
+		}	
+	}
 }

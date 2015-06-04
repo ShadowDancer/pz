@@ -89,11 +89,11 @@ namespace PZ.Controllers
 					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne zapytanie " + ex.Message))) };
 				}
 
-				var UserManager = (new UserManager<UserViewModel>(new UserStore<UserViewModel>(new ApplicationDbContext())));
-				UserManager.UserValidator = new UserValidator<UserViewModel>(UserManager) { AllowOnlyAlphanumericUserNames = false };
+				var userManager = (new UserManager<UserViewModel>(new UserStore<UserViewModel>(new ApplicationDbContext())));
+				userManager.UserValidator = new UserValidator<UserViewModel>(userManager) { AllowOnlyAlphanumericUserNames = false };
 				if (input.Action == "createAccount")
 				{
-					return await CreateAccount(input, UserManager);
+					return await CreateAccount(input, userManager);
 				}
 
 				UserViewModel user = null;
@@ -103,7 +103,7 @@ namespace PZ.Controllers
 				}
 				else
 				{
-					user = await UserManager.FindAsync(input.Username, input.Password);
+					user = await userManager.FindAsync(input.Username, input.Password);
 				}
 				if (user == null)
 				{
