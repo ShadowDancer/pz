@@ -28,7 +28,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SubOrder suborder = db.SubOrder.Find(id);
+            var suborder = db.SubOrder.Find(id);
             if (suborder == null)
             {
                 return HttpNotFound();
@@ -70,7 +70,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SubOrder suborder = db.SubOrder.Find(id);
+            var suborder = db.SubOrder.Find(id);
             if (suborder == null)
             {
                 return HttpNotFound();
@@ -105,7 +105,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SubOrder suborder = db.SubOrder.Find(id);
+            var suborder = db.SubOrder.Find(id);
             if (suborder == null)
             {
                 return HttpNotFound();
@@ -118,7 +118,7 @@ namespace PZ.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            SubOrder suborder = db.SubOrder.Find(id);
+            var suborder = db.SubOrder.Find(id);
             db.SubOrder.Remove(suborder);
             db.SaveChanges();
             return RedirectToAction("Index");

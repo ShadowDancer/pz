@@ -28,7 +28,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Order order = db.Order.Find(id);
+            var order = db.Order.Find(id);
             if (order == null)
             {
                 return HttpNotFound();
@@ -44,6 +44,18 @@ namespace PZ.Controllers
             ViewBag.WaiterID = new SelectList(db.Waiter, "ID", "Name");
             return View();
         }
+
+	    public ActionResult OrderList()
+	    {
+
+		    return View(db.Order.Where(n => n.UserID == ));
+	    }
+
+	    public ActionResult Suborder()
+	    {
+		    return View();
+	    }
+
 
         // POST: /Order/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -72,7 +84,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Order order = db.Order.Find(id);
+            var order = db.Order.Find(id);
             if (order == null)
             {
                 return HttpNotFound();
@@ -109,7 +121,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Order order = db.Order.Find(id);
+            var order = db.Order.Find(id);
             if (order == null)
             {
                 return HttpNotFound();
@@ -122,7 +134,7 @@ namespace PZ.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Order order = db.Order.Find(id);
+            var order = db.Order.Find(id);
             db.Order.Remove(order);
             db.SaveChanges();
             return RedirectToAction("Index");

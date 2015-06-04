@@ -17,8 +17,8 @@ namespace PZ.Controllers
 		
 		public new ActionResult View()
 		{
-			DateTime requestDate = DateTime.Now;
-			using(System.IO.StreamReader sr = new System.IO.StreamReader(Request.InputStream))
+			var requestDate = DateTime.Now;
+			using(var sr = new System.IO.StreamReader(Request.InputStream))
 			{
 				string inputDate = null;
 				inputDate = sr.ReadToEnd();
@@ -48,7 +48,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reservation_List reservation_list = db.Reservation_List.Find(id);
+            var reservation_list = db.Reservation_List.Find(id);
             if (reservation_list == null)
             {
                 return HttpNotFound();
@@ -90,7 +90,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reservation_List reservation_list = db.Reservation_List.Find(id);
+            var reservation_list = db.Reservation_List.Find(id);
             if (reservation_list == null)
             {
                 return HttpNotFound();
@@ -125,7 +125,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reservation_List reservation_list = db.Reservation_List.Find(id);
+            var reservation_list = db.Reservation_List.Find(id);
             if (reservation_list == null)
             {
                 return HttpNotFound();
@@ -138,7 +138,7 @@ namespace PZ.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Reservation_List reservation_list = db.Reservation_List.Find(id);
+            var reservation_list = db.Reservation_List.Find(id);
             db.Reservation_List.Remove(reservation_list);
             db.SaveChanges();
             return RedirectToAction("Index");

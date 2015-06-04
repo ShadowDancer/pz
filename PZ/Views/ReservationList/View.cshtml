@@ -14,13 +14,17 @@
 				},
 				mode: "popup",
 				placement: "bottom",
+				url: function(params)
+				{
+					window.top.location.href = window.top.location.href.split("?")[0] + '?value=' + params.value;
+				}
 			});
 		});
 	</script>
 }
 
 
-<h2>Rezerwacje <a href="#" class="editableDate" data-name="date" data-type="date" data-pk="1" data-url="View" data-title="Zmień datę">@Model.Date.Date.ToString("dd/MM/yyyy")</a></h2>
+<h2>Rezerwacje <a href="#" class="editableDate" data-name="date" data-type="date" data-title="Zmień datę">@Model.Date.Date.ToString("dd/MM/yyyy")</a></h2>
 
 
 
@@ -28,14 +32,14 @@
 <div style="clear: both; margin: 10px; padding: 10px">
 	<div style="height: 50px; width: 100px; float: left;"></div>
 
-	@for(int j = 0; j < Model.Data[0].Length; j++)
+	@for(var j = 0; j < Model.Data[0].Length; j++)
 		{
 	<div style="height: 50px; width: 100px; background-color: #ff0000; float:left; text-align:center">@(j + Model.OpeningHour):00</div>
 		}
 </div>
 
 
-@for(int i = 0; i < Model.Tables.Count; i++) {
+@for(var i = 0; i < Model.Tables.Count; i++) {
 var table = Model.Tables[i];
 var reservations = Model.Data[i];
 
@@ -43,7 +47,7 @@ var reservations = Model.Data[i];
 	<div style="clear: both; margin: 10px; padding: 10px">
 		<div style="float: left; height: 50px; width: 100px; ">@i.ToString()<br />Miejsca: @table.Capacity</div>
 
-		@for(int j = 0; j < Model.Data[i].Length; j++)
+		@for(var j = 0; j < Model.Data[i].Length; j++)
 		{
 			if(Model.Data[i][j])
 			{
@@ -57,7 +61,6 @@ var reservations = Model.Data[i];
 	</div>
 	<br />
 }
-
 
 
 

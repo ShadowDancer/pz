@@ -15,7 +15,7 @@ namespace PZ.Models
 
         public MenuBundleViewModel()
         {
-            using (PZEntities db = new PZEntities())
+            using (var db = new PZEntities())
             {
                 var query = from menu in db.Menu
                             orderby menu.Category

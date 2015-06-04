@@ -70,7 +70,7 @@
 
 <div id="tabs">
 	<ul>
-		@foreach (MenuViewModel menu in Model.Menus)
+		@foreach (var menu in Model.Menus)
 		{
 			<li>
 				@U.XEditableTrigger(menu.ID.ToString(), menu.Description, @Url.Action("_EditMenuDescription"),
@@ -83,11 +83,11 @@
 													 )
 	</ul>
 
-	@foreach (MenuViewModel menu in Model.Menus)
+	@foreach (var menu in Model.Menus)
 	{
 		<div id="tab@(menu.ID)">
 			<div class="accordion">
-				@foreach (SubmenuViewModel submenu in menu.Submenus)
+				@foreach (var submenu in menu.Submenus)
 				{
 					<h3>
 						@U.XEditableTrigger(submenu.ID.ToString(), submenu.Description, @Url.Action("_EditSubmenuDescription"),
@@ -103,7 +103,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach (DishViewModel dish in submenu.Dishes)
+								@foreach (var dish in submenu.Dishes)
 								{
 									<tr>
 										<td>@(dish.Name)</td>

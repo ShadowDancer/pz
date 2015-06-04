@@ -183,6 +183,7 @@
     <Compile Include="Controllers\Api\DTO\GetCartDTO.cs" />
     <Compile Include="Controllers\Api\DTO\OperationResultDTO.cs" />
     <Compile Include="Controllers\Api\DTO\MenuDTO.cs" />
+    <Compile Include="Controllers\Api\DTO\OrderDTO.cs" />
     <Compile Include="Controllers\Api\DTO\PostRequestDTO.cs" />
     <Compile Include="Controllers\Api\TestController.cs" />
     <Compile Include="Controllers\DishController.cs" />
@@ -403,6 +404,7 @@
     <Content Include="App_Code\U.cshtml" />
     <Content Include="Views\ReservationList\View.cshtml" />
     <Content Include="Views\Shared\ShoppingCartPartial.cshtml" />
+    <Content Include="Views\Order\OrderList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

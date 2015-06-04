@@ -14,7 +14,7 @@ namespace PZ.Models
 			this.Date = Date.Date;
 
 
-			using (PZEntities db = new PZEntities())
+			using (var db = new PZEntities())
 			{
 				Data = new List<bool[]>();
 
@@ -27,20 +27,20 @@ namespace PZ.Models
 
 				Tables = db.Table.OrderBy(n => n.ID).Select(n => new TableViewModel() { ID = n.ID, Capacity = n.Capacity, Comment = n.Comment }).ToList();
 
-				int span = ClosignHour - OpeningHour;
+				var span = ClosignHour - OpeningHour;
 				DayLength = span;
 				
 				foreach(var table in Tables)
 				{
-					bool[] reserved = new bool[span];
+					var reserved = new bool[span];
 
 					var tableReservations = reservations.FindAll(n => n.TableID == table.ID).ToList();
 					foreach(var reservation in tableReservations)
 					{
-						int startHour = OpeningHour - reservation.From.Hour;
-						int finishHour = OpeningHour - reservation.To.Hour;
+						var startHour = OpeningHour - reservation.From.Hour;
+						var finishHour = OpeningHour - reservation.To.Hour;
 
-						for(int i = startHour; i < finishHour; i++)
+						for(var i = startHour; i < finishHour; i++)
 						{
 							reserved[i] = true;
 						}

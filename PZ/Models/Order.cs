@@ -20,13 +20,12 @@ namespace PZ.Models
         }
     
         public int ID { get; set; }
-        public Nullable<int> UserID { get; set; }
-        public Nullable<int> TableID { get; set; }
+        public int UserID { get; set; }
+        public int TableID { get; set; }
         public Nullable<int> WaiterID { get; set; }
         public string Comment { get; set; }
         public System.DateTime IssueDate { get; set; }
-        public string State { get; set; }
-        public Nullable<decimal> Value { get; set; }
+        public int State { get; set; }
     
         public virtual Table Table { get; set; }
         public virtual User User { get; set; }

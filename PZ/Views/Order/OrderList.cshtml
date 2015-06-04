@@ -1,0 +1,34 @@
+﻿@model List<PZ.Models.Order>
+
+@{
+	ViewBag.Title = "title";
+	Layout = "_Layout";
+}
+
+<div>
+	<h2>Twoje zamówienia:</h2>
+	<div>
+		@foreach (var order in Model)
+		{
+			<div>
+				<div>
+					@(order.IssueDate)
+				</div>
+
+				<div>
+					@(order.SubOrder.Count)
+				</div>
+
+				<div>
+					@(order.Table)
+				</div>
+				<div>
+					@(order.State)
+				</div>
+
+			</div>
+		}
+	</div>
+
+
+</div>

@@ -27,7 +27,7 @@ namespace PZ.Controllers
             var currentUserId = User.Identity.GetUserId();
             if (currentUserId != null)
             {
-                UserViewModel userVM = new UserViewModel();
+                var userVM = new UserViewModel();
                 if (userVM != null)
                 {
                     return View(userVM);
@@ -49,7 +49,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.User.Find(id);
+            var user = db.User.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -87,7 +87,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.User.Find(id);
+            var user = db.User.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -118,7 +118,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.User.Find(id);
+            var user = db.User.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -131,7 +131,7 @@ namespace PZ.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            User user = db.User.Find(id);
+            var user = db.User.Find(id);
             db.User.Remove(user);
             db.SaveChanges();
             return RedirectToAction("Index");

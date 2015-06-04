@@ -84,12 +84,12 @@ namespace PZ.Controllers
 						throw new Exception();
 					}
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
-					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne zapytanie " + ex.Message ))) };
+					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne zapytanie " + ex.Message))) };
 				}
 
-				UserManager<UserViewModel> UserManager = (new UserManager<UserViewModel>(new UserStore<UserViewModel>(new ApplicationDbContext())));
+				var UserManager = (new UserManager<UserViewModel>(new UserStore<UserViewModel>(new ApplicationDbContext())));
 				UserManager.UserValidator = new UserValidator<UserViewModel>(UserManager) { AllowOnlyAlphanumericUserNames = false };
 				if (input.Action == "createAccount")
 				{
@@ -99,9 +99,7 @@ namespace PZ.Controllers
 				UserViewModel user = null;
 				if (this.User != null && this.User.Identity.IsAuthenticated)
 				{
-
-
-					int x = 10;
+					throw new NotImplementedException();
 				}
 				else
 				{
@@ -124,6 +122,8 @@ namespace PZ.Controllers
 						return GetCart(input);
 					case "example":
 						return CreateExample(input);
+					case "getOrders":
+						return GetOrders(user);
 					default:
 						return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "nieznana akcja"))) };
 				}
@@ -131,6 +131,18 @@ namespace PZ.Controllers
 			catch (Exception ex)
 			{
 				return ReturnMessage(false, "błąd podczas przetwarzania zapytania: " + ex.Message);
+			}
+		}
+
+		private HttpResponseMessage GetOrders(UserViewModel user)
+		{
+			try
+			{
+				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OrderBundleDto())) };
+			}
+			catch (Exception ex)
+			{
+				return ReturnMessage(false, ex.ToString());
 			}
 		}
 
@@ -148,11 +160,11 @@ namespace PZ.Controllers
 
 			try
 			{
-				using (PZEntities db = new PZEntities())
+				using (var db = new PZEntities())
 				{
 					var User = db.User.FirstOrDefault(n => n.Email == input.Username);
 
-					for (int i = 0; i < input.CartAmount.Count; i++)
+					for (var i = 0; i < input.CartAmount.Count; i++)
 					{
 						User.ShoppingCart.Add(new ShoppingCart() { DishID = input.CartItems[i], Quantity = input.CartItems[i], UserID = User.ID });
 					}
@@ -173,10 +185,10 @@ namespace PZ.Controllers
 			var result = await UserManager.CreateAsync(new UserViewModel() { UserName = input.Username }, input.Password);
 			if (result.Succeeded)
 			{
-				User newUser = new User();
+				var newUser = new User();
 				newUser.Email = input.Username;
 
-				using (PZEntities db = new PZEntities())
+				using (var db = new PZEntities())
 				{
 					db.User.Add(newUser);
 					try
@@ -203,9 +215,9 @@ namespace PZ.Controllers
 				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane"))) };
 			}
 
-			using (PZEntities db = new PZEntities())
+			using (var db = new PZEntities())
 			{
-				Reservation_List newReservarion = new Reservation_List();
+				var newReservarion = new Reservation_List();
 				newReservarion.TableID = input.Table;
 				newReservarion.UserID = user.ID;
 				newReservarion.From = input.ReservationDate.AddHours((double)input.ReservationHour);
@@ -243,9 +255,9 @@ namespace PZ.Controllers
 				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane"))) };
 			}
 
-			using (PZEntities db = new PZEntities())
+			using (var db = new PZEntities())
 			{
-				Order newOrder = new Order() { IssueDate = DateTime.Now, State = "1", TableID = (int)input.Table, UserID = user.PZUser.ID };
+				var newOrder = new Order() { IssueDate = DateTime.Now, State = 1, TableID = (int)input.Table, UserID = user.PZUser.ID };
 				db.Order.Add(newOrder);
 				try
 				{
@@ -255,16 +267,16 @@ namespace PZ.Controllers
 				{
 					return ReturnMessage(false, "Błąd podczas tworzenia zamówienia:\r\n" + ex.ToString());
 				}
-				
-				for (int i = 0; i < input.CartItems.Count; i++)
+
+				for (var i = 0; i < input.CartItems.Count; i++)
 				{
-					SubOrder subOrder = new SubOrder();
+					var subOrder = new SubOrder();
 					subOrder.DishID = input.CartItems[i];
 					subOrder.Quantity = input.CartAmount[i];
 					subOrder.OrderID = newOrder.ID;
 					db.SubOrder.Add(subOrder);
 				}
-				
+
 				try
 				{
 					db.SaveChanges();

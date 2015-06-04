@@ -26,7 +26,7 @@ namespace PZ.Models
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Table table = db.Table.Find(id);
+            var table = db.Table.Find(id);
             if (table == null)
             {
                 return HttpNotFound();
@@ -64,7 +64,7 @@ namespace PZ.Models
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Table table = db.Table.Find(id);
+            var table = db.Table.Find(id);
             if (table == null)
             {
                 return HttpNotFound();
@@ -95,7 +95,7 @@ namespace PZ.Models
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Table table = db.Table.Find(id);
+            var table = db.Table.Find(id);
             if (table == null)
             {
                 return HttpNotFound();
@@ -108,7 +108,7 @@ namespace PZ.Models
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Table table = db.Table.Find(id);
+            var table = db.Table.Find(id);
             db.Table.Remove(table);
             db.SaveChanges();
             return RedirectToAction("Index");
