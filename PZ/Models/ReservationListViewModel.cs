@@ -18,12 +18,12 @@ namespace PZ.Models
 			{
 				Data = new List<bool[]>();
 
-				var reservations = db.Reservation_List.
-					Where(n => n.From.CompareTo(Date) == 0)
-					.OrderBy(n => n.TableID).ThenBy(n => n.From)
-					.ToList()
-					;
+				List<Reservation_List> reservations = db.Reservation_List
+					.OrderBy(n => n.TableID)
+					.ThenBy(n => n.From)
+					.ToList();
 
+				reservations = reservations.Where(n => DateTime.Compare(n.From.Date, Date) == 0).ToList();
 
 				Tables = db.Table.OrderBy(n => n.ID).Select(n => new TableViewModel() { ID = n.ID, Capacity = n.Capacity, Comment = n.Comment }).ToList();
 
@@ -37,10 +37,14 @@ namespace PZ.Models
 					var tableReservations = reservations.FindAll(n => n.TableID == table.ID).ToList();
 					foreach(var reservation in tableReservations)
 					{
-						var startHour = OpeningHour - reservation.From.Hour;
-						var finishHour = OpeningHour - reservation.To.Hour;
-
-						for(var i = startHour; i < finishHour; i++)
+						var startHour = reservation.From.Hour - OpeningHour;
+						var finishHour = reservation.To.Hour - OpeningHour;
+						if (startHour < 0)
+						{
+							startHour = 0;
+						}
+									
+						for(var i = startHour; i < finishHour && i < span; i++)
 						{
 							reserved[i] = true;
 						}

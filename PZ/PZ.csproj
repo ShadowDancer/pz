@@ -402,7 +402,7 @@
     <Content Include="Views\Dish\Edit.cshtml" />
     <Content Include="Views\Dish\Index.cshtml" />
     <Content Include="App_Code\U.cshtml" />
-    <Content Include="Views\ReservationList\View.cshtml" />
+    <Content Include="Views\ReservationList\RList.cshtml" />
     <Content Include="Views\Shared\ShoppingCartPartial.cshtml" />
     <Content Include="Views\Order\OrderList.cshtml" />
   </ItemGroup>

@@ -99,7 +99,16 @@ namespace PZ.Controllers
 				UserViewModel user = null;
 				if (this.User != null && this.User.Identity.IsAuthenticated)
 				{
-					throw new NotImplementedException();
+					using (var db = new PZEntities())
+					{
+						var PZUser = db.User.FirstOrDefault(n => n.Email == User.Identity.Name);
+						user = new UserViewModel()
+						{
+							UserName = PZUser.Email
+						};
+						input.Username = PZUser.Email;
+					}
+					
 				}
 				else
 				{
@@ -153,7 +162,7 @@ namespace PZ.Controllers
 
 		private static HttpResponseMessage AddToCart(PostRequestDTO input)
 		{
-			if (input.CartAmount == null || input.CartItems == null || input.CartItems.Count == 0 || input.CartItems != input.CartAmount)
+			if (input.CartAmount == null || input.CartItems == null || input.CartItems.Count == 0 || input.CartItems.Count != input.CartAmount.Count)
 			{
 				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane"))) };
 			}
