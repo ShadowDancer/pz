@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
 using PZ.Models;
 
 namespace PZ.Controllers
@@ -14,21 +15,22 @@ namespace PZ.Controllers
 	{
 		private PZEntities db = new PZEntities();
 
-
-		public new ActionResult RList()
+		public ActionResult RList()
 		{
 			var requestDate = DateTime.Now;
-			
+
 			string inputDate = Request.QueryString["value"];
 
 			if (!string.IsNullOrEmpty(inputDate))
 			{
 				requestDate = DateTime.Parse(inputDate);
 			}
-			
 
-
-			return View(new ReservationListViewModel(requestDate));
+			var user = db.User.FirstOrDefault(n => n.Email == User.Identity.Name);
+			if (user != null)
+				return View(new ReservationListViewModel(requestDate, user.ID));
+			else
+				return View(new ReservationListViewModel(requestDate, -1));
 		}
 
 		// GET: /ReservationList/

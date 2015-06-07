@@ -12,7 +12,7 @@ namespace PZ.Models
             {
                 using (var db = new PZEntities())
                 {
-                    var result = db.User.FirstOrDefault(n => n.Email == Name);
+                    var result = db.User.FirstOrDefault(n => n.Email == UserName);
                     return result;
                 }
             }

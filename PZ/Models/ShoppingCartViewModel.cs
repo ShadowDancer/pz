@@ -23,7 +23,7 @@ namespace PZ.Models
 			}
 		}
 
-		List<DishViewModel> Dishes { get; set; }
-		List<int> Quantity { get; set; }
+		public List<DishViewModel> Dishes { get; set; }
+		public List<int> Quantity { get; set; }
 	}
 }

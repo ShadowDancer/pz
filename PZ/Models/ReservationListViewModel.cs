@@ -7,7 +7,7 @@ namespace PZ.Models
 {
 	public class ReservationListViewModel
 	{
-		public ReservationListViewModel(DateTime Date)
+		public ReservationListViewModel(DateTime Date, int UserID)
 		{
 			OpeningHour = 15;
 			ClosignHour = 22;
@@ -16,7 +16,7 @@ namespace PZ.Models
 
 			using (var db = new PZEntities())
 			{
-				Data = new List<bool[]>();
+				Data = new List<int[]>();
 
 				List<Reservation_List> reservations = db.Reservation_List
 					.OrderBy(n => n.TableID)
@@ -32,7 +32,7 @@ namespace PZ.Models
 				
 				foreach(var table in Tables)
 				{
-					var reserved = new bool[span];
+					var reserved = new int[span];
 
 					var tableReservations = reservations.FindAll(n => n.TableID == table.ID).ToList();
 					foreach(var reservation in tableReservations)
@@ -43,10 +43,17 @@ namespace PZ.Models
 						{
 							startHour = 0;
 						}
-									
+
 						for(var i = startHour; i < finishHour && i < span; i++)
 						{
-							reserved[i] = true;
+							if (reservation.UserID == UserID)
+							{
+								reserved[i] = 1;
+							}
+							else
+							{
+								reserved[i] = 2;
+							}
 						}
 					}
 
@@ -69,6 +76,6 @@ namespace PZ.Models
 		public int ClosignHour { get; set; }
 		public int DayLength { get; set; }
 		public List<TableViewModel> Tables { get; set; }
-		public List<bool[]> Data { get; set; }
+		public List<int[]> Data { get; set; }
 	}
 }

@@ -305,18 +305,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ShoppingCart_SubOrder">
-          <End Role="SubOrder" Type="Self.SubOrder" Multiplicity="1" />
-          <End Role="ShoppingCart" Type="Self.ShoppingCart" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SubOrder">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ShoppingCart">
-              <PropertyRef Name="Quantity" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ShoppingCart_User">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="ShoppingCart" Type="Self.ShoppingCart" Multiplicity="*" />
@@ -428,10 +416,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_ShoppingCart_Dish" Association="Self.FK_ShoppingCart_Dish">
             <End Role="Dish" EntitySet="Dish" />
-            <End Role="ShoppingCart" EntitySet="ShoppingCart" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ShoppingCart_SubOrder" Association="Self.FK_ShoppingCart_SubOrder">
-            <End Role="SubOrder" EntitySet="SubOrder" />
             <End Role="ShoppingCart" EntitySet="ShoppingCart" />
           </AssociationSet>
           <AssociationSet Name="FK_ShoppingCart_User" Association="Self.FK_ShoppingCart_User">
