@@ -4,123 +4,122 @@
 @section Head{
 
 
-	<script>
-		var token = $('input[name="__RequestVerificationToken"]').val();
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
 
-		var headers = {};
+        var headers = {};
 
-		headers['__RequestVerificationToken'] = token;
+        headers['__RequestVerificationToken'] = token;
 
 
 
-		$(function () {
-			$("#tabs").tabs();
-		});
+        $(function () {
+            $("#tabs").tabs();
+        });
 
-		$.fn.editable.defaults.mode = 'popup';
-		$(document).ready(function () {
-			$('.EditableSection').editable({
-				headers: headers,
-				toggle: 'manual',
-				success:
+        $.fn.editable.defaults.mode = 'popup';
+        $(document).ready(function () {
+            $('.EditableSection').editable({
+                headers: headers,
+                toggle: 'manual',
+                success:
         (function () {
-        	$("#tabs").tabs('destroy').tabs();
+            $("#tabs").tabs('destroy').tabs();
         }),
 
-			});
+            });
 
-			$('.EditableTrigger').click(function (e) {
-				e.stopPropagation();
-				$(this).prev().editable('toggle');
-			});
+            $('.EditableTrigger').click(function (e) {
+                e.stopPropagation();
+                $(this).prev().editable('toggle');
+            });
 
-			$('.EditableReaload').on('save', function (e, params) {
-				window.location.reload(true);
-			});
-		});
+            $('.EditableReaload').on('save', function (e, params) {
+                window.location.reload(true);
+            });
+        });
 
-		$(document).ready(function () {
-			$(".dish_order").click(function (event) {
-				event.preventDefault();
-				addToCart(this.id);
-			});
-		});
+        $(document).ready(function () {
+            $(".dish_order").click(function (event) {
+                event.preventDefault();
+                addToCart(this.id);
+            });
+        });
 
-		var addToCart = function(id)
-		{
-			$.ajax({
-				method: "POST",
-				url: "../api/Web/post",
-				data: JSON.stringify({ Action: "addToCart", CartItems: [id], CartAmount: [1] })
-			})
+        var addToCart = function (id) {
+            $.ajax({
+                method: "POST",
+                url: "../api/Web/post",
+                data: JSON.stringify({ Action: "addToCart", CartItems: [id], CartAmount: [1] })
+            })
 	  .done(function (msg) {
-	  	window.location.href = window.location.href;
+	      window.location.href = window.location.href;
 	  });
 
-		}
+        }
 
-	</script>
+    </script>
 }
 
 @{
-	ViewBag.Title = "Menu";
+    ViewBag.Title = "Menu";
 }
 
 <h2>Menu</h2>
 
 <div id="tabs">
-	<ul>
-		@foreach (MenuViewModel menu in Model.Menus)
-		{
-			<li>
-				@U.XEditableTrigger(menu.ID.ToString(), menu.Description, @Url.Action("_EditMenuDescription"),
-				@<a href="#tab@(menu.ID)">@(menu.Description)</a>)
-			</li>
-		}
+    <ul>
+        @foreach (MenuViewModel menu in Model.Menus)
+        {
+            <li>
+                @U.XEditableTrigger(menu.ID.ToString(), menu.Description, @Url.Action("_EditMenuDescription"),
+                @<a href="#tab@(menu.ID)">@(menu.Description)</a>)
+            </li>
+        }
 
-		@U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditMenuDescription"),
-		@<a href="#">+</a>
-													 )
-	</ul>
+        @U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditMenuDescription"),
+        @<a href="#">+</a>
+                                                              )
+    </ul>
 
-	@foreach (MenuViewModel menu in Model.Menus)
-	{
-		<div id="tab@(menu.ID)">
-			<div class="accordion">
-				@foreach (SubmenuViewModel submenu in menu.Submenus)
-				{
-					<h3>
-						@U.XEditableTrigger(submenu.ID.ToString(), submenu.Description, @Url.Action("_EditSubmenuDescription"),
-						@<span>@submenu.Description</span>)
-					</h3>
-					<div>
-						<table class="table">
-							<thead>
-								<tr>
-									<th>Name</th>
-									<th>Price</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								@foreach (DishViewModel dish in submenu.Dishes)
-								{
-									<tr>
-										<td>@(dish.Name)</td>
-										<td>@(dish.Price)</td>
-										<td><a id="@(dish.ID)" class="dish_order" href="#">Zamów</a></td>
-									</tr>
-								}
-							</tbody>
-						</table>
-					</div>
-				}
-				<h3>
-					@U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditSubmenuDescription"),
-					@<a href="#">+</a>)
-				</h3>
-				<div></div>
-			</div>
-		</div>
-	}
+    @foreach (MenuViewModel menu in Model.Menus)
+    {
+        <div id="tab@(menu.ID)">
+            <div class="accordion">
+                @foreach (SubmenuViewModel submenu in menu.Submenus)
+                {
+                    <h3>
+                        @U.XEditableTrigger(submenu.ID.ToString(), submenu.Description, @Url.Action("_EditSubmenuDescription"),
+                        @<span>@submenu.Description</span>)
+                    </h3>
+                    <div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th width="50%">Name</th>
+                                    <th width="30%">Price</th>
+                                    <th width="20%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (DishViewModel dish in submenu.Dishes)
+                                {
+                                    <tr>
+                                        <td width="50%">@(dish.Name)</td>
+                                        <td width="30%">@(dish.Price)</td>
+                                        <td width="20%"><a id="@(dish.ID)" class="dish_order" href="#">Zamów</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                <h3>
+                    @U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditSubmenuDescription"),
+                    @<a href="#">+</a>)
+                </h3>
+                <div></div>
+            </div>
+        </div>
+    }
 </div>
