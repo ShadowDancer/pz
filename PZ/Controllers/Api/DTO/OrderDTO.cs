@@ -19,11 +19,31 @@ namespace PZ.Controllers.Api.DTO
 						{
 							ID =  m.DishID,
 							Name = m.Dish.NameID,
-							Price = 0
+							Price = 0,
 						},
 						Quantity = m.Quantity,
 					}).ToList(),
 				}).ToList();
+
+
+				var prices = db.DishPrices.Where(n => n.DateTo < DateTime.Now).OrderBy(k => k.DateFrom).Take(1).Select(m => new
+				{
+					m.DishID,
+					m.Price
+				}).ToList();
+
+				foreach (var order in Orders)
+				{
+					foreach (var suborder in order.SubOrders)
+					{
+						var price = prices.FirstOrDefault(n => n.DishID == suborder.Dish.ID);
+						if (price != null)
+						{
+							suborder.Dish.Price = price.Price;
+						}
+					}
+
+				}
 			}
 		}
 

@@ -49,13 +49,17 @@ var reservations = Model.Data[i];
 
 		@for(var j = 0; j < Model.Data[i].Length; j++)
 		{
-			if(Model.Data[i][j])
+			if (Model.Data[i][j] == 0)
 			{
-		<div style="height: 50px; width: 100px; background-color: #ff0000; float:left; border:solid; "></div>
+				<div style="height: 50px; width: 100px; background-color: #00ff00; float: left; border: solid;"></div>
+			}
+			else if (Model.Data[i][j] == 1)
+			{
+				<div style="height: 50px; width: 100px; background-color: #00ffff; float: left; border: solid;"></div>
 			}
 			else
 			{
-		<div style="height: 50px; width: 100px; background-color: #00ff00; float: left; border: solid; "></div>
+			<div style="height: 50px; width: 100px; background-color: #ff0000; float:left; border:solid; "></div>
 			}
 		}
 	</div>

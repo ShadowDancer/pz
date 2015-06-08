@@ -241,6 +241,7 @@
     <Compile Include="Models\Order.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\WaiterOrderViewModel.cs" />
     <Compile Include="Models\OrderViewModel.cs" />
     <Compile Include="Controllers\Admin\TableController.cs" />
     <Compile Include="Models\ReservationListViewModel.cs" />
@@ -405,6 +406,7 @@
     <Content Include="Views\ReservationList\RList.cshtml" />
     <Content Include="Views\Shared\ShoppingCartPartial.cshtml" />
     <Content Include="Views\Order\OrderList.cshtml" />
+    <Content Include="Views\Order\OrderWaiter.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

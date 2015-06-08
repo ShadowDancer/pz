@@ -36,11 +36,14 @@ namespace PZ.Models
     {
         public SuborderViewModel(SubOrder suborder, PZEntities db)
         {
+	        Name = suborder.Dish.NameID;
+	        Quantity = suborder.Quantity;
+	        Price = 0;
         }
 
         public string Name { get; set; }
-        public string Price { get; set; }
-        public string Quantity { get; set; }
+		public decimal Price { get; set; }
+        public decimal Quantity { get; set; }
 
     }
 }

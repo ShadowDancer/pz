@@ -54,6 +54,13 @@ namespace PZ.Controllers
 			return View(orderList);
 	    }
 
+		public ActionResult OrderWaiter()
+		{
+
+			List<Order> orderList = db.Order.Where(n => n.State < 10).ToList();
+			return View(orderList);
+		}
+
 	    public ActionResult Suborder()
 	    {
 		    return View();
