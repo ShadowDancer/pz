@@ -42,20 +42,20 @@
             var table = Model.Tables[i];
             var reservations = Model.Data[i];
             <tr>
-                <th>@i.ToString()<br />Miejsca: @table.Capacity</th>
+                <th>Stolik nr: @i.ToString()<br />Miejsca: @table.Capacity</th>
                 @for (var j = 0; j < Model.Data[i].Length; j++)
                 {
                     if (Model.Data[i][j] == 0)
                     {
-                        <th class="success" style="text-align: center; background-color: #16e728">free</th>
+                        <th class="success" style="text-align: center; background-color: #16e728">Wolne</th>
                     }
                     else if (Model.Data[i][j] == 1)
                     {
-                        <th class="danger" style="text-align: center; background-color: #B30000; "><font style="color: rgb(96, 252, 252)">reserved</font></th>
+                        <th class="danger" style="text-align: center; background-color: #B30000; "><font style="color: rgb(96, 252, 252)">Zarezerwowane</font></th>
                     }
                     else
                     {
-                        <th class="info" style="text-align: center; background-color: #F9FF00">your reservation</th>
+                        <th class="info" style="text-align: center; background-color: #F9FF00">Twoja rezerwacja</th>
                     }
                 }
             </tr>
