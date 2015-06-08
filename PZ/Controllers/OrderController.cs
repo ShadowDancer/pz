@@ -7,6 +7,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using Microsoft.AspNet.Identity;
 using PZ.Models;
 
@@ -54,10 +55,28 @@ namespace PZ.Controllers
 			return View(orderList);
 	    }
 
+		public ActionResult CheckOrder()
+		{
+			CheckOrderViewModel vm = new CheckOrderViewModel();
+			List<Order> orderList = db.Order.Where(n => n.User.Email == User.Identity.Name && n.State < OrderState.paid).ToList();
+			vm.OpenOrders = orderList.Where(n => n.State == OrderState.open).ToList();
+			vm.RealisedOrders = orderList.Where(n => n.State == OrderState.realised).ToList();
+			vm.WaitingForPayments = orderList.Where(n => n.State == OrderState.paymentRequested).ToList();
+			return View(orderList);
+		}
+
+	    public ActionResult ShoppingCart()
+	    {
+			ShoppingCartModel model = new ShoppingCartModel();
+			model.ShoppingCart = db.ShoppingCart.Where(n => n.User.Name == User.Identity.Name).ToList();
+			return View(model);
+	    }
+
+
 		public ActionResult OrderWaiter()
 		{
 
-			List<Order> orderList = db.Order.Where(n => n.State < 10).ToList();
+			List<Order> orderList = db.Order.Where(n => n.State < OrderState.paid).ToList();
 			return View(orderList);
 		}
 

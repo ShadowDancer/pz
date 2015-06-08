@@ -6,7 +6,6 @@
 }
 
 <div>
-
 	@if (Model.Count > 0)
 	{
 		<h2>Twoje zamówienia:</h2>
@@ -42,7 +41,7 @@
 										@(order.SubOrder.ElementAt(j).Dish.NameID)
 									</div>
 									<div>
-										@(32.ToString())
+										@(order.SubOrder.ElementAt(j).Dish.GetPrice().ToString("0.00"))
 									</div>
 									<div>
 										@(order.SubOrder.ElementAt(j).Quantity)

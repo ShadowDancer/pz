@@ -26,7 +26,7 @@ namespace PZ.Controllers.Api.DTO
 				}).ToList();
 
 
-				var prices = db.DishPrices.Where(n => n.DateTo < DateTime.Now).OrderBy(k => k.DateFrom).Take(1).Select(m => new
+				var prices = db.DishPrices.Where(n => n.DateTo == null || n.DateTo > DateTime.Now).OrderBy(k => k.DateFrom).Take(1).Select(m => new
 				{
 					m.DishID,
 					m.Price
@@ -42,7 +42,6 @@ namespace PZ.Controllers.Api.DTO
 							suborder.Dish.Price = price.Price;
 						}
 					}
-
 				}
 			}
 		}

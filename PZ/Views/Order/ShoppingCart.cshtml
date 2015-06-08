@@ -1,0 +1,43 @@
+﻿@using PZ.Models
+@model ShoppingCartModel
+
+@{
+	ViewBag.Title = "title";
+}
+
+<div>
+
+	@{
+		if (Model.ShoppingCart.Count > 0)
+		{
+			<h2>Koszyk:</h2>
+			<div>
+				<div>
+					<div>
+						Nazwa
+					</div>
+					<div>
+						Cena
+					</div>
+					<div>
+						Ilość
+					</div>
+				</div>
+				@for (int i = 0; i < Model.ShoppingCart.Count; i++)
+				{
+				<div>
+					<div>
+						@(Model.ShoppingCart[i].Dish.NameID)
+					</div>
+					<div>
+						@(Model.ShoppingCart[i].Dish.GetPrice())
+					</div>
+					<div>
+						@(Model.ShoppingCart[i].Quantity)
+					</div>
+				</div>
+				}
+			</div>
+		}
+	}
+</div>

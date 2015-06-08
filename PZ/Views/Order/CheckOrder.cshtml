@@ -1,0 +1,44 @@
+﻿@using PZ.Models
+@model CheckOrderViewModel
+
+@{
+	ViewBag.Title = "title";
+}
+
+<div>
+
+	@{
+		if (Model.OpenOrders.Count > 0)
+		{
+			<h2>Oczekuje na realizcje:</h2>
+			<div>
+				<div>
+					<div>
+						Nazwa
+					</div>
+					<div>
+						Cena
+					</div>
+					<div>
+						Ilość
+					</div>
+				</div>
+				for (int i = 0; i < Model.OpenOrders.Count; i++)
+				{
+				<div>@(Model.OpenOrders[i].IssueDate.ToShortDateString())</div>
+				<div>
+					<div>
+						@(Model.ShoppingCart[i].Dish.NameID)
+					</div>
+					<div>
+						@(Model.ShoppingCart[i].Dish.GetPrice())
+					</div>
+					<div>
+						@(Model.ShoppingCart[i].Quantity)
+					</div>
+				</div>
+				}
+			</div>
+		}
+	}
+</div>

@@ -185,7 +185,6 @@
     <Compile Include="Controllers\Api\DTO\MenuDTO.cs" />
     <Compile Include="Controllers\Api\DTO\OrderDTO.cs" />
     <Compile Include="Controllers\Api\DTO\PostRequestDTO.cs" />
-    <Compile Include="Controllers\Api\TestController.cs" />
     <Compile Include="Controllers\DishController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
@@ -194,6 +193,9 @@
     <Compile Include="Controllers\Admin\UserController.cs" />
     <Compile Include="Controllers\Admin\WaiterController.cs" />
     <Compile Include="Controllers\Api\WebController.cs" />
+    <Compile Include="Models\ShoppingCartModel.cs" />
+    <Compile Include="Models\CheckOrderViewModel.cs" />
+    <Compile Include="OrderState.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -224,6 +226,7 @@
     <Compile Include="Models\Dish.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DishPriceExtenion.cs" />
     <Compile Include="Models\DishPrices.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
@@ -407,6 +410,8 @@
     <Content Include="Views\Shared\ShoppingCartPartial.cshtml" />
     <Content Include="Views\Order\OrderList.cshtml" />
     <Content Include="Views\Order\OrderWaiter.cshtml" />
+    <Content Include="Views\Order\CheckOrder.cshtml" />
+    <Content Include="Views\Order\ShoppingCart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

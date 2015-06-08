@@ -18,7 +18,7 @@ namespace PZ.Models
 				foreach (var item in list)
 				{
 					Quantity.Add(item.Quantity);
-					Dishes.Add(new DishViewModel() { ID = item.Dish.ID, Name = item.Dish.NameID, Price = 0 });
+					Dishes.Add(new DishViewModel() { ID = item.Dish.ID, Name = item.Dish.NameID, Price = item.Dish.GetPrice() });
 				}
 			}
 		}

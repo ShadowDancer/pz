@@ -108,6 +108,8 @@ namespace PZ.Controllers
 						return CreateReservation(input, user);
 					case "addToCart":
 						return AddToCart(input);
+					case "setCart":
+						return SetCart(input);
 					case "getCart":
 						return GetCart(input);
 					case "example":
@@ -173,6 +175,49 @@ namespace PZ.Controllers
 						for (var i = 0; i < input.CartAmount.Count; i++)
 						{
 							User.ShoppingCart.Add(new ShoppingCart() { DishID = input.CartItems[i], Quantity = input.CartAmount[i], UserID = User.ID });
+						}
+						db.SaveChanges();
+					}
+
+				}
+			}
+			catch (Exception ex)
+			{
+				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, ex.Message))) };
+			}
+
+			return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(true, ""))) };
+		}
+
+		private static HttpResponseMessage SetCart(PostRequestDTO input)
+		{
+			if (input.CartAmount == null || input.CartItems == null || input.CartItems.Count == 0 || input.CartItems.Count != input.CartAmount.Count)
+			{
+				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane"))) };
+			}
+
+			try
+			{
+				using (var db = new PZEntities())
+				{
+					var User = db.User.FirstOrDefault(n => n.Email == input.Username);
+
+					if (User != null)
+					{
+						for (var i = 0; i < input.CartAmount.Count; i++)
+						{
+							ShoppingCart item = User.ShoppingCart.Where(n => n.DishID == input.CartItems[i]).FirstOrDefault();
+							if (item != null)
+							{
+								if (input.CartAmount[i] == 0)
+								{
+									db.ShoppingCart.Remove(item);
+								}
+								else
+								{
+									item.Quantity = input.CartAmount[i];
+								}
+							}
 						}
 						db.SaveChanges();
 					}

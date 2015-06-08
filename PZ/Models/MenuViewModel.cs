@@ -44,7 +44,7 @@ namespace PZ.Models
                             };
                 Menus = query.ToList();
 
-				var prices = db.DishPrices.Where(n => n.DateTo == null || n.DateTo < DateTime.Now).OrderBy(k => k.DateFrom).Take(1).Select(m => new
+				var prices = db.DishPrices.Where(n => n.DateTo == null || n.DateTo > DateTime.Now).OrderBy(k => k.DateFrom).Take(1).Select(m => new
 				{
 					m.DishID,
 					m.Price
