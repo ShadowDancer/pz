@@ -6,151 +6,150 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
 using PZ.Models;
 
 namespace PZ.Controllers
 {
-    public class ReservationListController : Controller
-    {
-        private PZEntities db = new PZEntities();
+	public class ReservationListController : Controller
+	{
+		private PZEntities db = new PZEntities();
 
-		
-		public new ActionResult View()
+		public ActionResult RList()
 		{
-			DateTime requestDate = DateTime.Now;
-			using(System.IO.StreamReader sr = new System.IO.StreamReader(Request.InputStream))
-			{
-				string inputDate = null;
-				inputDate = sr.ReadToEnd();
-				var post = HttpUtility.ParseQueryString(inputDate);
+			var requestDate = DateTime.Now;
 
-				if(!string.IsNullOrEmpty(post["value"]))
-				{
-					requestDate = DateTime.Parse(post["value"]);
-				}
+			string inputDate = Request.QueryString["value"];
+
+			if (!string.IsNullOrEmpty(inputDate))
+			{
+				requestDate = DateTime.Parse(inputDate);
 			}
 
-
-			return View(new ReservationListViewModel(requestDate));
+			var user = db.User.FirstOrDefault(n => n.Email == User.Identity.Name);
+			if (user != null)
+				return View(new ReservationListViewModel(requestDate, user.ID));
+			else
+				return View(new ReservationListViewModel(requestDate, -1));
 		}
 
-        // GET: /ReservationList/
-        public ActionResult Index()
-        {
-            var reservation_list = db.Reservation_List.Include(r => r.Table).Include(r => r.User);
-            return View(reservation_list.ToList());
-        }
+		// GET: /ReservationList/
+		public ActionResult Index()
+		{
+			var reservationList = db.Reservation_List.Include(r => r.Table).Include(r => r.User);
+			return View(reservationList.ToList());
+		}
 
-        // GET: /ReservationList/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Reservation_List reservation_list = db.Reservation_List.Find(id);
-            if (reservation_list == null)
-            {
-                return HttpNotFound();
-            }
-            return View(reservation_list);
-        }
+		// GET: /ReservationList/Details/5
+		public ActionResult Details(int? id)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+			var reservation_list = db.Reservation_List.Find(id);
+			if (reservation_list == null)
+			{
+				return HttpNotFound();
+			}
+			return View(reservation_list);
+		}
 
-        // GET: /ReservationList/Create
-        public ActionResult Create()
-        {
-            ViewBag.TableID = new SelectList(db.Table, "ID", "Comment");
-            ViewBag.UserID = new SelectList(db.User, "ID", "City");
-            return View();
-        }
+		// GET: /ReservationList/Create
+		public ActionResult Create()
+		{
+			ViewBag.TableID = new SelectList(db.Table, "ID", "Comment");
+			ViewBag.UserID = new SelectList(db.User, "ID", "City");
+			return RList();
+		}
 
-        // POST: /ReservationList/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="ID,From,To,UserID,TableID")] Reservation_List reservation_list)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Reservation_List.Add(reservation_list);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+		// POST: /ReservationList/Create
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Create([Bind(Include = "ID,From,To,UserID,TableID")] Reservation_List reservation_list)
+		{
+			if (ModelState.IsValid)
+			{
+				db.Reservation_List.Add(reservation_list);
+				db.SaveChanges();
+				return RedirectToAction("Index");
+			}
 
-            ViewBag.TableID = new SelectList(db.Table, "ID", "Comment", reservation_list.TableID);
-            ViewBag.UserID = new SelectList(db.User, "ID", "City", reservation_list.UserID);
-            return View(reservation_list);
-        }
+			ViewBag.TableID = new SelectList(db.Table, "ID", "Comment", reservation_list.TableID);
+			ViewBag.UserID = new SelectList(db.User, "ID", "City", reservation_list.UserID);
+			return View(reservation_list);
+		}
 
-        // GET: /ReservationList/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Reservation_List reservation_list = db.Reservation_List.Find(id);
-            if (reservation_list == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.TableID = new SelectList(db.Table, "ID", "Comment", reservation_list.TableID);
-            ViewBag.UserID = new SelectList(db.User, "ID", "City", reservation_list.UserID);
-            return View(reservation_list);
-        }
+		// GET: /ReservationList/Edit/5
+		public ActionResult Edit(int? id)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+			var reservation_list = db.Reservation_List.Find(id);
+			if (reservation_list == null)
+			{
+				return HttpNotFound();
+			}
+			ViewBag.TableID = new SelectList(db.Table, "ID", "Comment", reservation_list.TableID);
+			ViewBag.UserID = new SelectList(db.User, "ID", "City", reservation_list.UserID);
+			return View(reservation_list);
+		}
 
-        // POST: /ReservationList/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include="ID,From,To,UserID,TableID")] Reservation_List reservation_list)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(reservation_list).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.TableID = new SelectList(db.Table, "ID", "Comment", reservation_list.TableID);
-            ViewBag.UserID = new SelectList(db.User, "ID", "City", reservation_list.UserID);
-            return View(reservation_list);
-        }
+		// POST: /ReservationList/Edit/5
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Edit([Bind(Include = "ID,From,To,UserID,TableID")] Reservation_List reservation_list)
+		{
+			if (ModelState.IsValid)
+			{
+				db.Entry(reservation_list).State = EntityState.Modified;
+				db.SaveChanges();
+				return RedirectToAction("Index");
+			}
+			ViewBag.TableID = new SelectList(db.Table, "ID", "Comment", reservation_list.TableID);
+			ViewBag.UserID = new SelectList(db.User, "ID", "City", reservation_list.UserID);
+			return View(reservation_list);
+		}
 
-        // GET: /ReservationList/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Reservation_List reservation_list = db.Reservation_List.Find(id);
-            if (reservation_list == null)
-            {
-                return HttpNotFound();
-            }
-            return View(reservation_list);
-        }
+		// GET: /ReservationList/Delete/5
+		public ActionResult Delete(int? id)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+			var reservation_list = db.Reservation_List.Find(id);
+			if (reservation_list == null)
+			{
+				return HttpNotFound();
+			}
+			return View(reservation_list);
+		}
 
-        // POST: /ReservationList/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Reservation_List reservation_list = db.Reservation_List.Find(id);
-            db.Reservation_List.Remove(reservation_list);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+		// POST: /ReservationList/Delete/5
+		[HttpPost, ActionName("Delete")]
+		[ValidateAntiForgeryToken]
+		public ActionResult DeleteConfirmed(int id)
+		{
+			var reservation_list = db.Reservation_List.Find(id);
+			db.Reservation_List.Remove(reservation_list);
+			db.SaveChanges();
+			return RedirectToAction("Index");
+		}
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-    }
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				db.Dispose();
+			}
+			base.Dispose(disposing);
+		}
+	}
 }

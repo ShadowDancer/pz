@@ -10,7 +10,7 @@ namespace PZ.Controllers.Api.DTO
 	{
 		public GetCartDTO(string Username)
 		{
-			using(PZEntities db = new PZEntities())
+			using(var db = new PZEntities())
 			{
 
 			}

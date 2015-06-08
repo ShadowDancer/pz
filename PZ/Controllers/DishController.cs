@@ -29,7 +29,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Dish dish = await db.Dish.FindAsync(id);
+            var dish = await db.Dish.FindAsync(id);
             if (dish == null)
             {
                 return HttpNotFound();
@@ -71,7 +71,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Dish dish = await db.Dish.FindAsync(id);
+            var dish = await db.Dish.FindAsync(id);
             if (dish == null)
             {
                 return HttpNotFound();
@@ -106,7 +106,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Dish dish = await db.Dish.FindAsync(id);
+            var dish = await db.Dish.FindAsync(id);
             if (dish == null)
             {
                 return HttpNotFound();
@@ -119,7 +119,7 @@ namespace PZ.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Dish dish = await db.Dish.FindAsync(id);
+            var dish = await db.Dish.FindAsync(id);
             db.Dish.Remove(dish);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");

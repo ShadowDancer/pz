@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="104c3053deb94e5193327be28b15f899" Name="Diagram1" ZoomLevel="104">
+      <Diagram DiagramId="104c3053deb94e5193327be28b15f899" Name="Diagram1" ZoomLevel="78">
         <EntityTypeShape EntityType="PZModel.Dish" Width="1.5" PointX="11.125" PointY="6.625" IsExpanded="true" />
         <EntityTypeShape EntityType="PZModel.Order" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
         <EntityTypeShape EntityType="PZModel.Reservation_List" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />

@@ -32,7 +32,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Menu menu = db.Menu.Find(id);
+            var menu = db.Menu.Find(id);
             if (menu == null)
             {
                 return HttpNotFound();
@@ -70,7 +70,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Menu menu = db.Menu.Find(id);
+            var menu = db.Menu.Find(id);
             if (menu == null)
             {
                 return HttpNotFound();
@@ -81,9 +81,9 @@ namespace PZ.Controllers
         [HttpPost]
         public ActionResult _EditMenuDescription(string pk, string value)
         {
-            using (PZEntities db = new PZEntities())
+            using (var db = new PZEntities())
             {
-                int id = 0;
+                var id = 0;
                 if (!string.IsNullOrEmpty(pk))
                 {
                     id = int.Parse(pk);
@@ -106,9 +106,9 @@ namespace PZ.Controllers
         [HttpPost]
         public ActionResult _EditSubmenuDescription(string pk, string value)
         {
-            using (PZEntities db = new PZEntities())
+            using (var db = new PZEntities())
             {
-                int id = 0;
+                var id = 0;
                 if (!string.IsNullOrEmpty(pk))
                 {
                     id = int.Parse(pk);
@@ -150,7 +150,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Menu menu = db.Menu.Find(id);
+            var menu = db.Menu.Find(id);
             if (menu == null)
             {
                 return HttpNotFound();
@@ -163,7 +163,7 @@ namespace PZ.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Menu menu = db.Menu.Find(id);
+            var menu = db.Menu.Find(id);
             db.Menu.Remove(menu);
             db.SaveChanges();
             return RedirectToAction("Index");

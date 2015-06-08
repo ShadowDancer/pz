@@ -27,7 +27,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Waiter waiter = db.Waiter.Find(id);
+            var waiter = db.Waiter.Find(id);
             if (waiter == null)
             {
                 return HttpNotFound();
@@ -65,7 +65,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Waiter waiter = db.Waiter.Find(id);
+            var waiter = db.Waiter.Find(id);
             if (waiter == null)
             {
                 return HttpNotFound();
@@ -96,7 +96,7 @@ namespace PZ.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Waiter waiter = db.Waiter.Find(id);
+            var waiter = db.Waiter.Find(id);
             if (waiter == null)
             {
                 return HttpNotFound();
@@ -109,7 +109,7 @@ namespace PZ.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Waiter waiter = db.Waiter.Find(id);
+            var waiter = db.Waiter.Find(id);
             db.Waiter.Remove(waiter);
             db.SaveChanges();
             return RedirectToAction("Index");

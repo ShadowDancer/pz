@@ -35,25 +35,6 @@ namespace PZ.Controllers
 			{
 				switch (type)
 				{
-					case "Reservations":
-						{
-							if (string.IsNullOrEmpty(id))
-							{
-								return new ReservationListViewModel(DateTime.Now);
-							}
-							else
-							{
-								try
-								{
-									return new ReservationListViewModel(DateTime.Parse(id));
-								}
-								catch (System.FormatException)
-								{
-									return new OperationResultDTO(false, "Nieprawidłowy format daty");
-								}
-							}
-						}
-					//break;
 					case "Menu":
 						{
 							return (object)new PZ.Models.MenuBundleViewModel().Menus;
@@ -84,28 +65,35 @@ namespace PZ.Controllers
 						throw new Exception();
 					}
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
-					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne zapytanie " + ex.Message ))) };
+					return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne zapytanie " + ex.Message))) };
 				}
 
-				UserManager<UserViewModel> UserManager = (new UserManager<UserViewModel>(new UserStore<UserViewModel>(new ApplicationDbContext())));
-				UserManager.UserValidator = new UserValidator<UserViewModel>(UserManager) { AllowOnlyAlphanumericUserNames = false };
+				var userManager = (new UserManager<UserViewModel>(new UserStore<UserViewModel>(new ApplicationDbContext())));
+				userManager.UserValidator = new UserValidator<UserViewModel>(userManager) { AllowOnlyAlphanumericUserNames = false };
 				if (input.Action == "createAccount")
 				{
-					return await CreateAccount(input, UserManager);
+					return await CreateAccount(input, userManager);
 				}
 
 				UserViewModel user = null;
 				if (this.User != null && this.User.Identity.IsAuthenticated)
 				{
+					using (var db = new PZEntities())
+					{
+						var PZUser = db.User.FirstOrDefault(n => n.Email == User.Identity.Name);
+						user = new UserViewModel()
+						{
+							UserName = PZUser.Email
+						};
+						input.Username = PZUser.Email;
+					}
 
-
-					int x = 10;
 				}
 				else
 				{
-					user = await UserManager.FindAsync(input.Username, input.Password);
+					user = await userManager.FindAsync(input.Username, input.Password);
 				}
 				if (user == null)
 				{
@@ -124,6 +112,10 @@ namespace PZ.Controllers
 						return GetCart(input);
 					case "example":
 						return CreateExample(input);
+					case "getOrders":
+						return GetOrders(user);
+					case "getReservations":
+						return GetReservations(input, user);
 					default:
 						return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "nieznana akcja"))) };
 				}
@@ -134,6 +126,30 @@ namespace PZ.Controllers
 			}
 		}
 
+		private static HttpResponseMessage GetReservations(PostRequestDTO input, UserViewModel user)
+		{
+			try
+			{
+				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new ReservationListViewModel(input.ReservationDate, user.ID))) };
+			}
+			catch (Exception ex)
+			{
+				return ReturnMessage(false, ex.ToString());
+			}
+		}
+
+		private HttpResponseMessage GetOrders(UserViewModel user)
+		{
+			try
+			{
+				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OrderBundleDto())) };
+			}
+			catch (Exception ex)
+			{
+				return ReturnMessage(false, ex.ToString());
+			}
+		}
+
 		private static HttpResponseMessage GetCart(PostRequestDTO input)
 		{
 			return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new ShoppingCartViewModel(input.Username))) };
@@ -141,23 +157,26 @@ namespace PZ.Controllers
 
 		private static HttpResponseMessage AddToCart(PostRequestDTO input)
 		{
-			if (input.CartAmount == null || input.CartItems == null || input.CartItems.Count == 0 || input.CartItems != input.CartAmount)
+			if (input.CartAmount == null || input.CartItems == null || input.CartItems.Count == 0 || input.CartItems.Count != input.CartAmount.Count)
 			{
 				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane"))) };
 			}
 
 			try
 			{
-				using (PZEntities db = new PZEntities())
+				using (var db = new PZEntities())
 				{
 					var User = db.User.FirstOrDefault(n => n.Email == input.Username);
 
-					for (int i = 0; i < input.CartAmount.Count; i++)
+					if (User != null)
 					{
-						User.ShoppingCart.Add(new ShoppingCart() { DishID = input.CartItems[i], Quantity = input.CartItems[i], UserID = User.ID });
+						for (var i = 0; i < input.CartAmount.Count; i++)
+						{
+							User.ShoppingCart.Add(new ShoppingCart() { DishID = input.CartItems[i], Quantity = input.CartAmount[i], UserID = User.ID });
+						}
+						db.SaveChanges();
 					}
 
-					db.SaveChanges();
 				}
 			}
 			catch (Exception ex)
@@ -173,10 +192,10 @@ namespace PZ.Controllers
 			var result = await UserManager.CreateAsync(new UserViewModel() { UserName = input.Username }, input.Password);
 			if (result.Succeeded)
 			{
-				User newUser = new User();
+				var newUser = new User();
 				newUser.Email = input.Username;
 
-				using (PZEntities db = new PZEntities())
+				using (var db = new PZEntities())
 				{
 					db.User.Add(newUser);
 					try
@@ -203,9 +222,9 @@ namespace PZ.Controllers
 				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane"))) };
 			}
 
-			using (PZEntities db = new PZEntities())
+			using (var db = new PZEntities())
 			{
-				Reservation_List newReservarion = new Reservation_List();
+				var newReservarion = new Reservation_List();
 				newReservarion.TableID = input.Table;
 				newReservarion.UserID = user.ID;
 				newReservarion.From = input.ReservationDate.AddHours((double)input.ReservationHour);
@@ -242,10 +261,10 @@ namespace PZ.Controllers
 			{
 				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "niepoprawne dane"))) };
 			}
-
-			using (PZEntities db = new PZEntities())
+			int PZUserID = user.PZUser.ID;
+			using (var db = new PZEntities())
 			{
-				Order newOrder = new Order() { IssueDate = DateTime.Now, State = "1", TableID = (int)input.Table, UserID = user.PZUser.ID };
+				var newOrder = new Order() { IssueDate = DateTime.Now, State = 1, TableID = (int)input.Table, UserID = PZUserID };
 				db.Order.Add(newOrder);
 				try
 				{
@@ -255,16 +274,37 @@ namespace PZ.Controllers
 				{
 					return ReturnMessage(false, "Błąd podczas tworzenia zamówienia:\r\n" + ex.ToString());
 				}
-				
-				for (int i = 0; i < input.CartItems.Count; i++)
+
+				var suborders = new List<SubOrder>();
+				for (var i = 0; i < input.CartItems.Count; i++)
 				{
-					SubOrder subOrder = new SubOrder();
+					var subOrder = new SubOrder();
 					subOrder.DishID = input.CartItems[i];
 					subOrder.Quantity = input.CartAmount[i];
 					subOrder.OrderID = newOrder.ID;
 					db.SubOrder.Add(subOrder);
+					suborders.Add(subOrder);
 				}
-				
+
+				var shoppingCartItems = db.ShoppingCart.Where(n => n.UserID == PZUserID);
+				foreach (var shoppingCartItem in (shoppingCartItems))
+				{
+					var connectedSuborder = suborders.FirstOrDefault(n => n.DishID == shoppingCartItem.DishID);
+					if (connectedSuborder == null)
+					{
+						var subOrder = new SubOrder();
+						subOrder.DishID = shoppingCartItem.DishID;
+						subOrder.Quantity = shoppingCartItem.Quantity;
+						subOrder.OrderID = newOrder.ID;
+						db.SubOrder.Add(subOrder);
+						suborders.Add(subOrder);
+					}
+					else
+					{
+						connectedSuborder.Quantity += shoppingCartItem.Quantity;
+					}
+				}
+
 				try
 				{
 					db.SaveChanges();

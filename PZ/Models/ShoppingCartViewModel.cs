@@ -9,9 +9,9 @@ namespace PZ.Models
 	{
 		public ShoppingCartViewModel(string userEmail)
 		{
-			using(PZEntities db = new PZEntities())
+			using(var db = new PZEntities())
 			{
-				List<ShoppingCart> list = db.ShoppingCart.Where(n => n.User.Email == userEmail).ToList();
+				var list = db.ShoppingCart.Where(n => n.User.Email == userEmail).ToList();
 				Quantity = new List<int>();
 				Dishes = new List<DishViewModel>();
 
@@ -23,7 +23,7 @@ namespace PZ.Models
 			}
 		}
 
-		List<DishViewModel> Dishes { get; set; }
-		List<int> Quantity { get; set; }
+		public List<DishViewModel> Dishes { get; set; }
+		public List<int> Quantity { get; set; }
 	}
 }

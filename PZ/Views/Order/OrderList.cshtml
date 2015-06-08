@@ -1,0 +1,69 @@
+﻿@using PZ.Models
+@model List<PZ.Models.Order>
+
+@{
+	ViewBag.Title = "title";
+}
+
+<div>
+
+	@if (Model.Count > 0)
+	{
+		<h2>Twoje zamówienia:</h2>
+		<div>
+			@{
+				Order order = Model[0];
+				for (int i = 0; i < Model.Count; order = Model[i], i++)
+				{
+					<div>
+						<div>
+							@(i + 1)
+						</div>
+						<div>
+							@(order.IssueDate)
+						</div>
+
+						<div>
+							<div>
+								<div>
+									Nazwa
+								</div>
+								<div>
+									Cena
+								</div>
+								<div>
+									Ilość
+								</div>
+							</div>
+							@for (int j = 0; j < order.SubOrder.Count; j++)
+							{
+								<div>
+									<div>
+										@(order.SubOrder.ElementAt(j).Dish.NameID)
+									</div>
+									<div>
+										@(32.ToString())
+									</div>
+									<div>
+										@(order.SubOrder.ElementAt(j).Quantity)
+									</div>
+								</div>
+							}
+						</div>
+
+						<div>
+							@(order.Table.ID)
+						</div>
+						<div>
+							@(order.State)
+						</div>
+					</div>
+				}
+			}
+		</div>
+	}
+	else
+	{
+		<h2>Brak zamówień.</h2>
+	}
+</div>

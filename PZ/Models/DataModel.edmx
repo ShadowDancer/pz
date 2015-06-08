@@ -64,13 +64,12 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="UserID" Type="int" />
-          <Property Name="TableID" Type="int" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="TableID" Type="int" Nullable="false" />
           <Property Name="WaiterID" Type="int" />
           <Property Name="Comment" Type="varchar" MaxLength="255" />
           <Property Name="IssueDate" Type="datetime" Nullable="false" />
-          <Property Name="State" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="Value" Type="numeric" Precision="5" Scale="2" />
+          <Property Name="State" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Reservation List">
           <Key>
@@ -96,9 +95,9 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="OrderID" Type="int" />
-          <Property Name="DishID" Type="int" />
-          <Property Name="Quantity" Type="int" />
+          <Property Name="OrderID" Type="int" Nullable="false" />
+          <Property Name="DishID" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -151,7 +150,7 @@
           <Property Name="Sex" Type="varchar" MaxLength="8" />
         </EntityType>
         <Association Name="FK__Order__TableID__24927208">
-          <End Role="Table" Type="Self.Table" Multiplicity="0..1" />
+          <End Role="Table" Type="Self.Table" Multiplicity="1" />
           <End Role="Order" Type="Self.Order" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Table">
@@ -163,7 +162,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__Order__UserID__239E4DCF">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="Order" Type="Self.Order" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -211,7 +210,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__SubOrder__DishID__2A4B4B5E">
-          <End Role="Dish" Type="Self.Dish" Multiplicity="0..1" />
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
           <End Role="SubOrder" Type="Self.SubOrder" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Dish">
@@ -223,7 +222,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__SubOrder__OrderI__29572725">
-          <End Role="Order" Type="Self.Order" Multiplicity="0..1" />
+          <End Role="Order" Type="Self.Order" Multiplicity="1" />
           <End Role="SubOrder" Type="Self.SubOrder" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Order">
@@ -303,18 +302,6 @@
             </Principal>
             <Dependent Role="ShoppingCart">
               <PropertyRef Name="DishID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ShoppingCart_SubOrder">
-          <End Role="SubOrder" Type="Self.SubOrder" Multiplicity="1" />
-          <End Role="ShoppingCart" Type="Self.ShoppingCart" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SubOrder">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ShoppingCart">
-              <PropertyRef Name="Quantity" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -431,10 +418,6 @@
             <End Role="Dish" EntitySet="Dish" />
             <End Role="ShoppingCart" EntitySet="ShoppingCart" />
           </AssociationSet>
-          <AssociationSet Name="FK_ShoppingCart_SubOrder" Association="Self.FK_ShoppingCart_SubOrder">
-            <End Role="SubOrder" EntitySet="SubOrder" />
-            <End Role="ShoppingCart" EntitySet="ShoppingCart" />
-          </AssociationSet>
           <AssociationSet Name="FK_ShoppingCart_User" Association="Self.FK_ShoppingCart_User">
             <End Role="User" EntitySet="User" />
             <End Role="ShoppingCart" EntitySet="ShoppingCart" />
@@ -466,13 +449,12 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserID" Type="Int32" />
-          <Property Name="TableID" Type="Int32" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="TableID" Type="Int32" Nullable="false" />
           <Property Name="WaiterID" Type="Int32" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="IssueDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="State" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Value" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="State" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Table" Relationship="Self.FK__Order__TableID__24927208" FromRole="Order" ToRole="Table" />
           <NavigationProperty Name="User" Relationship="Self.FK__Order__UserID__239E4DCF" FromRole="Order" ToRole="User" />
           <NavigationProperty Name="Waiter" Relationship="Self.FK__Order__WaiterID__25869641" FromRole="Order" ToRole="Waiter" />
@@ -495,9 +477,9 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="OrderID" Type="Int32" />
-          <Property Name="DishID" Type="Int32" />
-          <Property Name="Quantity" Type="Int32" />
+          <Property Name="OrderID" Type="Int32" Nullable="false" />
+          <Property Name="DishID" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Dish" Relationship="Self.FK__SubOrder__DishID__2A4B4B5E" FromRole="SubOrder" ToRole="Dish" />
           <NavigationProperty Name="Order" Relationship="Self.FK__SubOrder__OrderI__29572725" FromRole="SubOrder" ToRole="Order" />
           <NavigationProperty Name="ShoppingCart" Relationship="PZModel.FK_ShoppingCart_SubOrder" FromRole="SubOrder" ToRole="ShoppingCart" />
@@ -550,7 +532,7 @@
           <NavigationProperty Name="Order" Relationship="Self.FK__Order__WaiterID__25869641" FromRole="Waiter" ToRole="Order" />
         </EntityType>
         <Association Name="FK__SubOrder__DishID__2A4B4B5E">
-          <End Role="Dish" Type="Self.Dish" Multiplicity="0..1" />
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
           <End Role="SubOrder" Type="Self.SubOrder" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Dish">
@@ -562,7 +544,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__Order__TableID__24927208">
-          <End Role="Table" Type="Self.Table" Multiplicity="0..1" />
+          <End Role="Table" Type="Self.Table" Multiplicity="1" />
           <End Role="Order" Type="Self.Order" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Table">
@@ -574,7 +556,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__Order__UserID__239E4DCF">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="Order" Type="Self.Order" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -598,7 +580,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__SubOrder__OrderI__29572725">
-          <End Role="Order" Type="Self.Order" Multiplicity="0..1" />
+          <End Role="Order" Type="Self.Order" Multiplicity="1" />
           <End Role="SubOrder" Type="Self.SubOrder" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Order">
@@ -948,7 +930,6 @@
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="IssueDate" ColumnName="IssueDate" />
                 <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="Value" ColumnName="Value" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

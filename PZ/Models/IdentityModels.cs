@@ -10,7 +10,7 @@ namespace PZ.Models
         {
             get
             {
-                using (PZEntities db = new PZEntities())
+                using (var db = new PZEntities())
                 {
                     var result = db.User.FirstOrDefault(n => n.Email == UserName);
                     return result;
@@ -25,7 +25,10 @@ namespace PZ.Models
 
         public string Email
         {
-            get { return PZUser.Email; }
+	        get
+	        {
+		        return PZUser.Email;
+	        }
         }
 
         public string Age

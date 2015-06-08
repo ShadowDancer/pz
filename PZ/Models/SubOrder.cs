@@ -20,9 +20,9 @@ namespace PZ.Models
         }
     
         public int ID { get; set; }
-        public Nullable<int> OrderID { get; set; }
-        public Nullable<int> DishID { get; set; }
-        public Nullable<int> Quantity { get; set; }
+        public int OrderID { get; set; }
+        public int DishID { get; set; }
+        public int Quantity { get; set; }
     
         public virtual Dish Dish { get; set; }
         public virtual Order Order { get; set; }
