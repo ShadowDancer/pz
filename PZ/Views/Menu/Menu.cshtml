@@ -11,17 +11,17 @@
 		headers['__RequestVerificationToken'] = token;
 
 
-		$(function() {
+		$(function () {
 			$("#tabs").tabs();
 		});
 
 		$.fn.editable.defaults.mode = 'popup';
-		$(document).ready(function() {
+		$(document).ready(function () {
 			$('.EditableSection').editable({
 				headers: headers,
 				toggle: 'manual',
 				success:
-				(function() {
+				(function () {
 					$("#tabs").tabs('destroy').tabs();
 				}),
 
@@ -55,30 +55,30 @@
 				});
 			});
 
-			$('.EditableTrigger').click(function(e) {
+			$('.EditableTrigger').click(function (e) {
 				e.stopPropagation();
 				$(this).prev().editable('toggle');
 			});
 
-			$('.EditableReaload').on('save', function(e, params) {
+			$('.EditableReaload').on('save', function (e, params) {
 				window.location.reload(true);
 			});
 		});
 
-		$(document).ready(function() {
-			$(".dish_order").click(function(event) {
+		$(document).ready(function () {
+			$(".dish_order").click(function (event) {
 				event.preventDefault();
 				addToCart(this.id);
 			});
 		});
 
-		var addToCart = function(id) {
+		var addToCart = function (id) {
 			$.ajax({
-					method: "POST",
-					url: "../api/Web/post",
-					data: JSON.stringify({ Action: "addToCart", CartItems: [id], CartAmount: [1] })
-				})
-				.done(function(msg) {
+				method: "POST",
+				url: "../api/Web/post",
+				data: JSON.stringify({ Action: "addToCart", CartItems: [id], CartAmount: [1] })
+			})
+				.done(function (msg) {
 					window.location.href = window.location.href;
 				});
 
@@ -137,13 +137,13 @@
 										<td width="50%">@(dish.Name)</td>
 										<td width="30%">
 											@(dish.Price.ToString("F"))
-										@if (User.IsInRole("admin"))
-										{
-											<a class="dishEdit" id="@dish.ID" href="#" data-type="text" data-pk="@(dish.ID)" data-title="Wpisz cenę w formacie x.xx, lub cenę i datę w formacie YYYY-MM-DD">Edytuj</a>
-										}
-									</td>
-									<td width="20%"><a id="@(dish.ID)" class="dish_order" href="#">Zamów</a></td>
-								</tr>
+											@if (User.IsInRole("admin"))
+											{
+												<a class="dishEdit" id="@dish.ID" href="#" data-type="text" data-pk="@(dish.ID)" data-title="Wpisz cenę w formacie x.xx, lub cenę i datę w formacie YYYY-MM-DD">Edytuj</a>
+											}
+										</td>
+										<td width="20%"><a id="@(dish.ID)" class="dish_order" href="#">Zamów</a></td>
+									</tr>
 								}
 							</tbody>
 						</table>
@@ -156,5 +156,9 @@
 				<div></div>
 			</div>
 		</div>
+	}
+	@if (Request.IsAuthenticated)
+	{
+		@Html.ActionLink("Złóż zamówienie", "ShoppingCart", "Order")
 	}
 </div>

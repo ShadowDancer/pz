@@ -1,22 +1,63 @@
 ﻿@using Microsoft.AspNet.Identity
+@using PZ.Models
 @if (Request.IsAuthenticated)
 {
 	using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
-    {
-    @Html.AntiForgeryToken()
+	{
+		@Html.AntiForgeryToken()
 
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-            @Html.ActionLink("Witaj " + User.Identity.GetUserName() + "!", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Ustawienia" })
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Wyloguj</a></li>
-    </ul>
-    }
+		<ul class="nav navbar-nav navbar-right">
+			@{
+		int shoppingCart = 0;
+		string Result = "";
+
+		using (var db = new PZEntities())
+		{
+			var username = Html.ViewContext.HttpContext.User.Identity.Name;
+			var PZUser = db.User.FirstOrDefault(n => n.Email == username);
+			if (PZUser != null)
+			{
+				shoppingCart = PZUser.ShoppingCart.Count();
+			}
+		}
+		if(shoppingCart > 0)
+		{
+			<li>
+				@{ Result += "Masz "; }
+				@if (shoppingCart == 1)
+				{
+					{
+						Result += "1 pozycję";
+					}
+				}
+				else if (shoppingCart < 5)
+				{
+					{
+						Result += shoppingCart.ToString() + " pozycje";
+					}
+				}
+				else
+				{
+					{
+						Result += shoppingCart.ToString() + " pozycji";
+					}
+				}
+				@{ Result += " w koszyku"; }
+				@Html.ActionLink(Result, "ShoppingCart", "Order")
+			</li>
+		}
+			}
+			<li>
+				@Html.ActionLink("Witaj " + User.Identity.GetUserName() + "!", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Ustawienia" })
+			</li>
+			<li><a href="javascript:document.getElementById('logoutForm').submit()">Wyloguj</a></li>
+		</ul>
+	}
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Rejestracja", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Zaloguj", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-    </ul>
+	<ul class="nav navbar-nav navbar-right">
+		<li>@Html.ActionLink("Rejestracja", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+		<li>@Html.ActionLink("Zaloguj", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+	</ul>
 }
