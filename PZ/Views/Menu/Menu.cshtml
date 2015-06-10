@@ -6,119 +6,155 @@
 	<script>
 		var token = $('input[name="__RequestVerificationToken"]').val();
 
-        var headers = {};
+		var headers = {};
 
-        headers['__RequestVerificationToken'] = token;
+		headers['__RequestVerificationToken'] = token;
 
 
+		$(function() {
+			$("#tabs").tabs();
+		});
 
-        $(function () {
-            $("#tabs").tabs();
-        });
+		$.fn.editable.defaults.mode = 'popup';
+		$(document).ready(function() {
+			$('.EditableSection').editable({
+				headers: headers,
+				toggle: 'manual',
+				success:
+				(function() {
+					$("#tabs").tabs('destroy').tabs();
+				}),
 
-        $.fn.editable.defaults.mode = 'popup';
-        $(document).ready(function () {
-            $('.EditableSection').editable({
-                headers: headers,
-                toggle: 'manual',
-                success:
-        (function () {
-            $("#tabs").tabs('destroy').tabs();
-        }),
+			});
 
-            });
+			$('.dishEdit').editable({
 
-            $('.EditableTrigger').click(function (e) {
-                e.stopPropagation();
-                $(this).prev().editable('toggle');
-            });
+				value: "",
+				send: "never"
+			});
 
-            $('.EditableReaload').on('save', function (e, params) {
-                window.location.reload(true);
-            });
-        });
+			$('.dishEdit').on('save', function (e, params) {
+				var that = this;
+				$.ajax({
+					url: "/api/Web/post",
+					method: "POST",
+					data: JSON.stringify({
+						'Action': 'setPrice',
+						'Data': params.newValue,
+						'Table': $(this).attr("id")
+					})
 
-        $(document).ready(function () {
-            $(".dish_order").click(function (event) {
-                event.preventDefault();
-                addToCart(this.id);
-            });
-        });
 
-        var addToCart = function (id) {
-            $.ajax({
-                method: "POST",
-                url: "../api/Web/post",
-                data: JSON.stringify({ Action: "addToCart", CartItems: [id], CartAmount: [1] })
-            })
-	  .done(function (msg) {
-	      window.location.href = window.location.href;
-	  });
+				}).success(function (data) {
+					that.innerHTML = "Edytuj";
+					if (JSON.parse(data).Success === true) {
+						window.location.reload();
+					} else {
+						alert("Wystąpił błąd.");
+					}
+				});
+			});
 
-        }
+			$('.EditableTrigger').click(function(e) {
+				e.stopPropagation();
+				$(this).prev().editable('toggle');
+			});
 
-    </script>
+			$('.EditableReaload').on('save', function(e, params) {
+				window.location.reload(true);
+			});
+		});
+
+		$(document).ready(function() {
+			$(".dish_order").click(function(event) {
+				event.preventDefault();
+				addToCart(this.id);
+			});
+		});
+
+		var addToCart = function(id) {
+			$.ajax({
+					method: "POST",
+					url: "../api/Web/post",
+					data: JSON.stringify({ Action: "addToCart", CartItems: [id], CartAmount: [1] })
+				})
+				.done(function(msg) {
+					window.location.href = window.location.href;
+				});
+
+		}
+
+
+	</script>
 }
 
 @{
-    ViewBag.Title = "Menu";
+	ViewBag.Title = "Menu";
 }
 
 <h2>Menu</h2>
 
 <div id="tabs">
-    <ul>
-        @foreach (MenuViewModel menu in Model.Menus)
-        {
-            <li>
-                @U.XEditableTrigger(menu.ID.ToString(), menu.Description, @Url.Action("_EditMenuDescription"),
-                @<a href="#tab@(menu.ID)">@(menu.Description)</a>)
-            </li>
-        }
+	<ul>
+		@foreach (MenuViewModel menu in Model.Menus)
+		{
+			<li>
+				@U.XEditableTrigger(menu.ID.ToString(), menu.Description, @Url.Action("_EditMenuDescription"),
+				@<a href="#tab@(menu.ID)">@(menu.Description)</a>)
+			</li>
+		}
 
-        @U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditMenuDescription"),
-        @<a href="#">+</a>
-                                                              )
-    </ul>
+		@if (User.IsInRole("admin"))
+		{
+			@U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditMenuDescription"),
+			@<a href="#">+</a>)
+		}																	   )
+	</ul>
 
-    @foreach (MenuViewModel menu in Model.Menus)
-    {
-        <div id="tab@(menu.ID)">
-            <div class="accordion">
-                @foreach (SubmenuViewModel submenu in menu.Submenus)
-                {
-                    <h3>
-                        @U.XEditableTrigger(submenu.ID.ToString(), submenu.Description, @Url.Action("_EditSubmenuDescription"),
-                        @<span>@submenu.Description</span>)
-                    </h3>
-                    <div>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th width="50%">Name</th>
-                                    <th width="30%">Price</th>
-                                    <th width="20%"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (DishViewModel dish in submenu.Dishes)
-                                {
-                                    <tr>
-                                        <td width="50%">@(dish.Name)</td>
-                                        <td width="30%">@(dish.Price)</td>
-                                        <td width="20%"><a id="@(dish.ID)" class="dish_order" href="#">Zamów</a></td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                <h3>
-                    @U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditSubmenuDescription"),
-                    @<a href="#">+</a>)
-                </h3>
-                <div></div>
-            </div>
-        </div>
-    }
+	@foreach (MenuViewModel menu in Model.Menus)
+	{
+		<div id="tab@(menu.ID)">
+			<div class="accordion">
+				@foreach (SubmenuViewModel submenu in menu.Submenus)
+				{
+					<h3>
+						@U.XEditableTrigger(submenu.ID.ToString(), submenu.Description, @Url.Action("_EditSubmenuDescription"),
+						@<span>@submenu.Description</span>)
+					</h3>
+					<div>
+						<table class="table">
+							<thead>
+								<tr>
+									<th width="50%">Nazwa</th>
+									<th width="30%">Cena</th>
+									<th width="20%"></th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (DishViewModel dish in submenu.Dishes)
+								{
+									<tr>
+										<td width="50%">@(dish.Name)</td>
+										<td width="30%">
+											@(dish.Price.ToString("F"))
+										@if (User.IsInRole("admin"))
+										{
+											<a class="dishEdit" id="@dish.ID" href="#" data-type="text" data-pk="@(dish.ID)" data-title="Wpisz cenę w formacie x.xx, lub cenę i datę w formacie YYYY-MM-DD">Edytuj</a>
+										}
+									</td>
+									<td width="20%"><a id="@(dish.ID)" class="dish_order" href="#">Zamów</a></td>
+								</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				}
+				<h3>
+					@U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditSubmenuDescription"),
+					@<a href="#">+</a>)
+				</h3>
+				<div></div>
+			</div>
+		</div>
+	}
 </div>

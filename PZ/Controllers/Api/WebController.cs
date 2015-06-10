@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Web.Http;
 using System.Web.Security;
 using PZ.Controllers.Api.DTO;
@@ -118,6 +119,8 @@ namespace PZ.Controllers
 						return GetOrders(user);
 					case "getReservations":
 						return GetReservations(input, user);
+					case "setPrice":
+						return SetPrice(input, user);
 					default:
 						return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OperationResultDTO(false, "nieznana akcja"))) };
 				}
@@ -126,6 +129,51 @@ namespace PZ.Controllers
 			{
 				return ReturnMessage(false, "błąd podczas przetwarzania zapytania: " + ex.Message);
 			}
+		}
+
+		private HttpResponseMessage SetPrice(PostRequestDTO input, UserViewModel user)
+		{
+			try
+			{
+
+				if (!this.User.IsInRole("admin"))
+				{
+					return ReturnMessage(false, "Brak uprawnień");
+				}
+
+				string[] split = input.Data.Split(' ');
+				decimal price = decimal.Parse(split[0]);
+
+				using (var db = new PZEntities())
+				{
+
+
+					DishPrices dp = new DishPrices();
+					dp.DishID = input.Table.Value;
+					dp.DateFrom = DateTime.Now;
+					dp.Price = price;
+
+					if (split.Length > 1)
+					{
+						dp.DateTo = DateTime.Parse(split[1]);
+					}
+					else
+					{
+						dp.DateTo = null;
+					}
+
+					db.DishPrices.Add(dp);
+					db.SaveChanges();
+
+				}
+
+				return ReturnMessage(true, "");
+			}
+			catch
+			{
+
+			}
+			return ReturnMessage(false, "Nieznany błąd");
 		}
 
 		private static HttpResponseMessage GetReservations(PostRequestDTO input, UserViewModel user)
@@ -274,7 +322,12 @@ namespace PZ.Controllers
 				newReservarion.UserID = user.ID;
 				newReservarion.From = input.ReservationDate.AddHours((double)input.ReservationHour);
 				newReservarion.To = newReservarion.From.AddHours((double)input.ReservationLength);
+
+
 				db.Reservation_List.Add(newReservarion);
+
+
+
 				try
 				{
 					db.SaveChanges();

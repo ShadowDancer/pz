@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - Projekt zespołowy</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
@@ -23,27 +23,27 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", null, new { @class = "navbar-brand" })
+                @Html.ActionLink("Projekt zespołowy", "Index", "Home", null, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">					
 					
                     <li>Użytkownik:</li>
                     <li>@Html.ActionLink("Menu", "../Menu/Menu")</li>
-                    <li>@Html.ActionLink("Profile", "../User/ViewProfile")</li>
-                    <li>@Html.ActionLink("Order", "../Order/OrderList")</li>
-					<li>@Html.ActionLink("Order", "../Order/OrderWaiter")</li>
-                    <li>@Html.ActionLink("ReservationList", "../ReservationList/RList")</li>
+                    <li>@Html.ActionLink("Profil", "../User/ViewProfile")</li>
+                    <li>@Html.ActionLink("Zamówienia", "../Order/OrderList")</li>
+                    <li>@Html.ActionLink("Rezerwacje", "../ReservationList/RList")</li>
                     <li class="dropdown-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             <span class="caret"></span>Dropdown
                         </a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Waiter", "../Waiter")</li>
-                            <li>@Html.ActionLink("Table", "../Table")</li>
-                            <li>@Html.ActionLink("Dish", "../Dish")</li>
-                            <li>@Html.ActionLink("Menu", "../Menu/Menu")</li>
-                        </ul>
+	                    <ul class="dropdown-menu">
+							<li>@Html.ActionLink("Order", "../Order/OrderWaiter")</li>
+		                    <li>@Html.ActionLink("Waiter", "../Waiter")</li>
+		                    <li>@Html.ActionLink("Table", "../Table")</li>
+		                    <li>@Html.ActionLink("Dish", "../Dish")</li>
+		                    <li>@Html.ActionLink("Menu", "../Menu/Menu")</li>
+	                    </ul>
 
 
                     </li>
@@ -56,7 +56,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Projekt zespołowy 2015</p>
         </footer>
     </div>
 

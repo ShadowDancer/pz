@@ -1,6 +1,6 @@
 ﻿@model PZ.Models.ReservationListViewModel
 @{
-    ViewBag.Title = "Rezerwacje";
+	ViewBag.Title = "Rezerwacje";
 }
 
 @section Head{
@@ -27,42 +27,153 @@
 <h2>Rezerwacje <a href="#" class="editableDate" data-name="date" data-type="date" data-title="Zmień datę">@Model.Date.Date.ToString("dd/MM/yyyy")</a></h2>
 
 <table class="table table-bordered" style="table-layout: fixed">
-    <thead>
-        <tr>
-            <th></th>
-            @for (var j = 0; j < Model.Data[0].Length; j++)
-            {
-                <th>@(j + Model.OpeningHour):00</th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-        @for (var i = 0; i < Model.Tables.Count; i++)
-        {
-            var table = Model.Tables[i];
-            var reservations = Model.Data[i];
-            <tr>
-                <th>Stolik nr: @i.ToString()<br />Miejsca: @table.Capacity</th>
-                @for (var j = 0; j < Model.Data[i].Length; j++)
-                {
-                    if (Model.Data[i][j] == 0)
-                    {
-                        <th class="success" style="text-align: center; background-color: #16e728">Wolne</th>
-                    }
-                    else if (Model.Data[i][j] == 1)
-                    {
-                        <th class="danger" style="text-align: center; background-color: #B30000; "><font style="color: rgb(96, 252, 252)">Zarezerwowane</font></th>
-                    }
-                    else
-                    {
-                        <th class="info" style="text-align: center; background-color: #F9FF00">Twoja rezerwacja</th>
-                    }
-                }
-            </tr>
-        }
-    </tbody>
+	<thead>
+		<tr>
+			<th></th>
+			@for (var j = 0; j < Model.Data[0].Length; j++)
+			{
+				<th>@(j + Model.OpeningHour):00</th>
+			}
+		</tr>
+	</thead>
+	<tbody>
+		@for (var i = 0; i < Model.Tables.Count; i++)
+		{
+			var table = Model.Tables[i];
+			var reservations = Model.Data[i];
+			<tr>
+				<th>Stolik nr: @Model.Tables[i].ID.ToString()<br />Miejsca: @table.Capacity</th>
+				@for (var j = 0; j < Model.Data[i].Length; j++)
+				{
+					if (Model.Data[i][j] == 0)
+					{
+						<th class="success" style="text-align: center; background-color: #16e728">Wolne</th>
+					}
+					else if (Model.Data[i][j] == 1)
+					{
+						<th class="danger" style="text-align: center; background-color: #B30000; "><font style="color: rgb(96, 252, 252)">Zarezerwowane</font></th>
+					}
+					else
+					{
+						<th class="info" style="text-align: center; background-color: #F9FF00">Twoja rezerwacja</th>
+					}
+				}
+			</tr>
+		}
+	</tbody>
 </table>
 
+<h3>
+	Zarezerwuj
+	<a id="table" href="#" data-type="select" data-pk="1" data-title="Wybierz stolik">stolik</a> o
+	<a id="hour" href="#" data-type="select" data-pk="2" data-disabled="True" data-title="Wybierz godzinę">godzinie</a> na
+	<a id="length" href="#" data-type="select" data-pk="3" data-disabled="True" data-title="Wybierz stolik">-</a> godzin.
+</h3>
 
 
+<script>
+	var tableData = @Json.Encode(Model.Data);
+	var startHour = @(Model.OpeningHour);
+	var tableIdMapping = @Json.Encode(Model.Tables.Select(n => n.ID).ToList());
 
+	var selectedTable = -1;
+	var selectedHour = -1;
+
+	$('#table').editable({
+		value: -1,
+		send: "never",
+		source: [
+			@for(int i = 0; i < Model.Tables.Count; i++)
+			{
+				@Html.Raw("{ value: " + i.ToString() + ", text: 'stolik ' + tableIdMapping[" + i.ToString() + "]  },\r\n")
+			}
+		]
+	});
+
+	$('#table').on('save', function(e, params) {
+		$('#hour').attr("data-disabled", "false");
+		$('#hour').editable('enable');
+		selectedTable = parseInt(params.newValue);
+		var sources = [];
+		for (var i = startHour; i < startHour + tableData[0].length; i++) {
+			if(tableData[selectedTable][i - startHour] === 0)
+			{
+				sources.push({ value: i +'', text: i+'' });
+			}
+		}
+
+		$('#hour').editable('option', 'source', sources);
+
+		$('#hour').editable('show');
+
+
+	});
+
+
+	$('#hour').editable({
+		value: -1,
+		send: "never"
+	});
+
+	$('#hour').on('save', function(e, params) {
+		$('#length').attr("data-disabled", "false");
+		$('#length').editable('enable');
+		selectedHour = parseInt(params.newValue);
+		var sources = [];
+		for (var i = 0; i + selectedHour - startHour < tableData[0].length && tableData[selectedTable][i + selectedHour - startHour] === 0; i++) {
+			var length = i + 1;
+			sources.push({ value: length+'', text: length+'' });
+		}
+		$('#length').editable('option', 'source', sources);
+		$('#length').editable('show');
+	});
+
+	$('#length').editable({
+		value: -1,
+		send: "never"
+	});
+
+	$('#length').on('save', function(e, params) {
+		var selectedLength = params.newValue - 1;
+		var d = new Date();
+
+		var month = d.getMonth()+1;
+		var day = d.getDate();
+		var year = d.getFullYear();
+
+		var date = getParameterByName('value');
+		if (!date) {
+			date = year + "-" + month + "-" + day;
+		}
+
+		$.ajax({
+			url: "/api/Web/post",
+			method: "POST",
+			data: JSON.stringify({
+				'Action': 'reserve',
+				'ReservationDate': date,
+				'Table': tableIdMapping[selectedTable] + '',
+				'ReservationHour': selectedHour,
+				'ReservationLength': selectedLength + 1
+			})
+
+
+		}).success(function(data) {
+
+			if (JSON.parse(data).Success === true) {
+				window.location.reload();
+			} else {
+				alert("Rezerwacja nie powiodła się.");
+			}
+		});
+	});
+
+	function getParameterByName(name) {
+		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+			results = regex.exec(location.search);
+		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}
+
+
+</script>

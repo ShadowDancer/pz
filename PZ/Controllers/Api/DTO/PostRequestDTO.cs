@@ -29,6 +29,8 @@ namespace PZ.Controllers.Api.DTO
 		/// </summary>
 		public string Data { get; set; }
 
+		public string SetPrice { get; set; }
+
 
 		public List<int> CartItems { get; set; }
 		public List<int> CartAmount { get; set; }

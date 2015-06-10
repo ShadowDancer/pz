@@ -12,6 +12,7 @@ namespace PZ.Models
 			OpeningHour = 15;
 			ClosignHour = 22;
 			this.Date = Date.Date;
+			Date = Date.Date;
 
 
 			using (var db = new PZEntities())
@@ -46,7 +47,7 @@ namespace PZ.Models
 
 						for(var i = startHour; i < finishHour && i < span; i++)
 						{
-							if (reservation.UserID == UserID)
+							if (reservation.UserID != UserID)
 							{
 								reserved[i] = 1;
 							}
