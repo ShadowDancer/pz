@@ -16,6 +16,7 @@ namespace PZ.Controllers.Api.DTO
 
 				Orders = db.Order.Where(n => n.UserID == pzUser.ID).Select(n => new OrderDTO()
 				{
+					 
 					SubOrders = n.SubOrder.Select(m => new SubOrderDTO()
 					{
 						Dish = new DishViewModel()
@@ -26,6 +27,8 @@ namespace PZ.Controllers.Api.DTO
 						},
 						Quantity = m.Quantity,
 					}).ToList(),
+					date = n.IssueDate,
+					state = n.State
 				}).ToList();
 
 
