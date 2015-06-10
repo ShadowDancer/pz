@@ -290,7 +290,7 @@ namespace PZ.Controllers
 		public ActionResult RepDown(int id)
 		{
 			var PZUser = db.User.Where(n => n.ID == id).FirstOrDefault();
-			if (PZUser.Reputation == null)
+			if (PZUser.Reputation == null)	
 				PZUser.Reputation = 0;
 
 			PZUser.Reputation = (decimal?)Math.Max((double)(PZUser.Reputation - 1), -5);

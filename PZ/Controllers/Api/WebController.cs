@@ -117,6 +117,8 @@ namespace PZ.Controllers
 						return CreateExample(input);
 					case "getOrders":
 						return GetOrders(user);
+					case "requestPayment":
+						return RequestPayment(user);
 					case "getReservations":
 						return GetReservations(input, user);
 					case "setPrice":
@@ -129,6 +131,23 @@ namespace PZ.Controllers
 			{
 				return ReturnMessage(false, "błąd podczas przetwarzania zapytania: " + ex.Message);
 			}
+		}
+
+		private HttpResponseMessage RequestPayment(UserViewModel user)
+		{
+			using(var db  = new PZEntities())
+			{
+				var PZUser = db.User.Where(n => n.Email == user.UserName).Single();
+				var Orders = PZUser.Order.Where(n => n.State == OrderState.realised).ToList();
+
+				foreach (var order in Orders)
+				{
+					order.State = OrderState.paymentRequested;
+				}
+				db.SaveChanges();
+			}
+			return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OrderBundleDto(user))) };
+			
 		}
 
 		private HttpResponseMessage SetPrice(PostRequestDTO input, UserViewModel user)
