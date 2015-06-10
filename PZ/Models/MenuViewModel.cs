@@ -43,24 +43,14 @@ namespace PZ.Models
                                             }).ToList(),
                             };
                 Menus = query.ToList();
-
-				var prices = db.DishPrices.Where(n => n.DateTo == null || n.DateTo > DateTime.Now).OrderByDescending(k => k.DateFrom).Take(1).Select(m => new
-				{
-					m.DishID,
-					m.Price
-				}).ToList();
-
+				
 				foreach (var menu in Menus)
 				{
 					foreach (var suborder in menu.Submenus)
 					{
 						foreach(var dish in suborder.Dishes)
 						{
-							var price = prices.FirstOrDefault(n => n.DishID == dish.ID);
-							if (price != null)
-							{
-								dish.Price = price.Price;
-							}
+							dish.Price = db.Dish.Where(n => n.ID == dish.ID).Single().GetPrice();
 						}
 					}
 

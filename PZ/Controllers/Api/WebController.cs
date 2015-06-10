@@ -192,7 +192,7 @@ namespace PZ.Controllers
 		{
 			try
 			{
-				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OrderBundleDto())) };
+				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new OrderBundleDto(user))) };
 			}
 			catch (Exception ex)
 			{

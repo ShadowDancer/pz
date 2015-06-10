@@ -7,11 +7,14 @@ namespace PZ.Controllers.Api.DTO
 {
 	public class OrderBundleDto
 	{
-		public OrderBundleDto()
+		public OrderBundleDto(UserViewModel user)
 		{
 			using(var db = new PZEntities())
 			{
-				Orders = db.Order.Select(n => new OrderDTO()
+				var pzUser = db.User.FirstOrDefault(n => n.Email == user.UserName);
+
+
+				Orders = db.Order.Where(n => n.UserID == pzUser.ID).Select(n => new OrderDTO()
 				{
 					SubOrders = n.SubOrder.Select(m => new SubOrderDTO()
 					{
@@ -19,30 +22,22 @@ namespace PZ.Controllers.Api.DTO
 						{
 							ID =  m.DishID,
 							Name = m.Dish.NameID,
-							Price = 0,
+							Price = m.Dish.GetPrice(),
 						},
 						Quantity = m.Quantity,
 					}).ToList(),
 				}).ToList();
 
 
-				var prices = db.DishPrices.Where(n => n.DateTo == null || n.DateTo > DateTime.Now).OrderBy(k => k.DateFrom).Take(1).Select(m => new
-				{
-					m.DishID,
-					m.Price
-				}).ToList();
-
 				foreach (var order in Orders)
 				{
 					foreach (var suborder in order.SubOrders)
 					{
-						var price = prices.FirstOrDefault(n => n.DishID == suborder.Dish.ID);
-						if (price != null)
-						{
-							suborder.Dish.Price = price.Price;
-						}
+							suborder.Dish.Price = db.Dish.Where(n => n.ID == suborder.Dish.ID).Single().GetPrice();
 					}
+
 				}
+				
 			}
 		}
 
