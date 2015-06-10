@@ -6,38 +6,60 @@
 }
 
 <div>
-
+	<br /><br />
 	@{
 		if (Model.ShoppingCart.Count > 0)
 		{
 			<h2>Koszyk:</h2>
+			<table class="table">
+				<thead>
+					<tr>
+						<td width="40%">
+							Nazwa
+						</td>
+						<td width="20%">
+							Cena
+						</td>
+						<td width="20%">
+							Ilość
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					@for (int i = 0; i < Model.ShoppingCart.Count; i++)
+					{
+						<tr>
+							<td width="60%">
+								@(Model.ShoppingCart[i].Dish.NameID)
+							</td>
+							<td width="20%">
+								@(Model.ShoppingCart[i].Dish.GetPrice().ToString("F"))
+							</td>
+							<td width="5%">
+								@(Model.ShoppingCart[i].Quantity)
+							</td>
+							<td width="5%">
+								@Html.ActionLink("+", "inc", new { id = Model.ShoppingCart[i].ID })
+							</td>
+							<td width="5%">
+								@Html.ActionLink("-", "dec", new { id = Model.ShoppingCart[i].ID })
+							</td>
+							<td width="5%">
+								@Html.ActionLink("x", "del", new { id = Model.ShoppingCart[i].ID })
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+
+			@Html.ActionLink("Zamawiam", "OrderCreate");
+		}
+		else
+		{
 			<div>
-				<div>
-					<div>
-						Nazwa
-					</div>
-					<div>
-						Cena
-					</div>
-					<div>
-						Ilość
-					</div>
-				</div>
-				@for (int i = 0; i < Model.ShoppingCart.Count; i++)
-				{
-				<div>
-					<div>
-						@(Model.ShoppingCart[i].Dish.NameID)
-					</div>
-					<div>
-						@(Model.ShoppingCart[i].Dish.GetPrice())
-					</div>
-					<div>
-						@(Model.ShoppingCart[i].Quantity)
-					</div>
-				</div>
-				}
+				Koszyk jest pusty.
 			</div>
+
 		}
 	}
 </div>

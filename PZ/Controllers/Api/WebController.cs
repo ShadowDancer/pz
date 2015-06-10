@@ -402,6 +402,7 @@ namespace PZ.Controllers
 						connectedSuborder.Quantity += shoppingCartItem.Quantity;
 					}
 				}
+				db.ShoppingCart.RemoveRange(shoppingCartItems);
 
 				try
 				{
