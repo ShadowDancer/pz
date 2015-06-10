@@ -8,7 +8,8 @@ namespace PZ
 {
 	public static class OrderState
 	{
-		public const int open = 0;
+		public const int open = 1;
+		public const int wip = 5;
 		public const int realised = 10;
 		public const int paymentRequested = 20;
 		public const int paid = 30;

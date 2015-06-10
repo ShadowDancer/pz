@@ -9,57 +9,78 @@
 	@if (Model.Count > 0)
 	{
 		<h2>Twoje zamówienia:</h2>
-		<div>
+		<table class="table">
+			<thead>
+			<tr>
+				<td>Nr</td>
+				<td>Data</td>
+				<td>Pozycje</td>
+				<td>Stolik</td>
+				<td>Status</td>
+
+			</tr>
+			</thead>
+			<tbody>
 			@{
 				Order order = Model[0];
-				for (int i = 0; i < Model.Count; order = Model[i], i++)
+				for (int i = 0; i < Model.Count; i++)
 				{
-					<div>
-						<div>
+					order = Model[i];
+					<tr>
+						<td width="5%">
 							@(i + 1)
-						</div>
-						<div>
+						</td>
+						<td width="15%">
 							@(order.IssueDate)
-						</div>
-
-						<div>
-							<div>
-								<div>
-									Nazwa
-								</div>
-								<div>
-									Cena
-								</div>
-								<div>
-									Ilość
-								</div>
-							</div>
-							@for (int j = 0; j < order.SubOrder.Count; j++)
-							{
-								<div>
-									<div>
-										@(order.SubOrder.ElementAt(j).Dish.NameID)
-									</div>
-									<div>
-										@(order.SubOrder.ElementAt(j).Dish.GetPrice().ToString("0.00"))
-									</div>
-									<div>
-										@(order.SubOrder.ElementAt(j).Quantity)
-									</div>
-								</div>
-							}
-						</div>
-
-						<div>
+						</td>
+						<td width="65%">
+							<table class="table">
+								<thead>
+								<tr>
+									<td width="60%">
+										Nazwa
+									</td>
+									<td width="20%">
+										Cena
+									</td>
+									<td width="20%">
+										Ilość
+									</td>
+								</tr>
+								</thead>
+								<tbody>
+								@for (int j = 0; j < order.SubOrder.Count; j++)
+								{
+									<tr>
+										<td width="60%">
+											@(order.SubOrder.ElementAt(j).Dish.NameID)
+										</td>
+										<td width="20%">
+											@(order.SubOrder.ElementAt(j).Dish.GetPrice().ToString("0.00"))
+										</td>
+										<td width="20%">
+											@(order.SubOrder.ElementAt(j).Quantity)
+										</td>
+									</tr>
+								}
+								</tbody>
+							</table>
+						</td>
+						<td width="5%">
 							@(order.Table.ID)
-						</div>
-						<div>
-							@(order.State)
-						</div>
-					</div>
+						</td>
+						<td width="10%">
+							@(order.GetStatusName())
+						</td>
+					</tr>
 				}
 			}
-		</div>
+			</tbody>
+		</table>
+		if (@ViewBag.CanRequestPayment)
+		 {
+			 @Html.ActionLink("Poproś o rachunek", "RequestPayment")
+		 }
 	}
 	else
 	{

@@ -50,8 +50,12 @@ namespace PZ.Controllers
 
 		public ActionResult OrderList()
 		{
-
+			ViewBag.CanRequestPayment = false;
 			List<Order> orderList = db.Order.Where(n => n.User.Email == User.Identity.Name).ToList();
+			if (orderList.Where(n => n.State == OrderState.realised).Count() > 0)
+			{
+				ViewBag.CanRequestPayment = true;
+			}
 			return View(orderList);
 		}
 
@@ -230,6 +234,69 @@ namespace PZ.Controllers
 
 			db.SaveChanges();
 			return RedirectToAction("OrderList");
+		}
+
+		public ActionResult WaiterOrderProgress(int orderid)
+		{
+			var order = db.Order.Single(n => n.ID == orderid);
+
+			switch (order.State)
+			{
+				case OrderState.open:
+					order.State = OrderState.wip;
+					break;
+				case OrderState.wip:
+					order.State = OrderState.realised;
+					break;
+				case OrderState.realised:
+					order.State = OrderState.paymentRequested;
+					break;
+				case OrderState.paymentRequested:
+					order.State = OrderState.paid;
+					break;
+			}
+
+			db.SaveChanges();
+
+			return RedirectToAction("OrderWaiter");
+		}
+
+		public ActionResult RequestPayment()
+		{
+			var PZUser = db.User.Where(n => n.Email == User.Identity.Name).FirstOrDefault();
+			var OrderList = db.Order.Where(n => n.UserID == PZUser.ID && n.State == OrderState.realised);
+			foreach (var order in OrderList)
+			{
+				order.State = OrderState.paymentRequested;
+			}
+
+			db.SaveChanges();
+
+			return RedirectToAction("OrderList");
+		}
+
+		public ActionResult RepUp(int id)
+		{
+			var PZUser = db.User.Where(n => n.ID == id).FirstOrDefault();
+			if (PZUser.Reputation == null)
+				PZUser.Reputation = 0;
+
+			PZUser.Reputation = (decimal?) Math.Min((double) (PZUser.Reputation+ 1), 5);
+			db.SaveChanges();
+
+			return RedirectToAction("OrderWaiter");
+		}
+
+		public ActionResult RepDown(int id)
+		{
+			var PZUser = db.User.Where(n => n.ID == id).FirstOrDefault();
+			if (PZUser.Reputation == null)
+				PZUser.Reputation = 0;
+
+			PZUser.Reputation = (decimal?)Math.Max((double)(PZUser.Reputation - 1), -5);
+			db.SaveChanges();
+
+			return RedirectToAction("OrderWaiter");
 		}
 	}
 }
