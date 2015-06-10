@@ -22,7 +22,7 @@ namespace PZ.Controllers.Api.DTO
 						{
 							ID =  m.DishID,
 							Name = m.Dish.NameID,
-							Price = m.Dish.GetPrice(),
+							Price = 0,
 						},
 						Quantity = m.Quantity,
 					}).ToList(),
