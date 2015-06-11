@@ -202,7 +202,7 @@ namespace PZ.Controllers
 			    int userID = -1;
 			    using (var db = new PZEntities())
 			    {
-			        var PZUser = db.User.FirstOrDefault(n => n.Email == user.Name);
+			        var PZUser = db.User.FirstOrDefault(n => n.Email == user.UserName);
 			        userID = PZUser.ID;
 			    }
 
