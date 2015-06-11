@@ -17,14 +17,25 @@ namespace PZ.Controllers
 	{
 		private PZEntities db = new PZEntities();
 
-		// GET: /Order/
+        // GET: /Order/
+        [Authorize(Roles = "admin")]
 		public ActionResult Index()
 		{
 			var order = db.Order.Include(o => o.Table).Include(o => o.User).Include(o => o.Waiter);
 			return View(order.ToList());
 		}
 
-		// GET: /Order/Details/5
+        [Authorize]
+	    public ActionResult Table(int id)
+	    {
+	        var PZUser = db.User.FirstOrDefault(n => n.Email == User.Identity.Name);
+            PZUser.Comment = id.ToString();
+            db.SaveChanges();
+            return RedirectToAction("ShoppingCart");
+	    }
+
+        // GET: /Order/Details/5
+        [Authorize(Roles = "admin")]
 		public ActionResult Details(int? id)
 		{
 			if (id == null)
@@ -39,7 +50,8 @@ namespace PZ.Controllers
 			return View(order);
 		}
 
-		// GET: /Order/Create
+        // GET: /Order/Create
+        [Authorize(Roles = "admin")]
 		public ActionResult Create()
 		{
 			ViewBag.TableID = new SelectList(db.Table, "ID", "Comment");
@@ -48,6 +60,7 @@ namespace PZ.Controllers
 			return View();
 		}
 
+        [Authorize]
 		public ActionResult OrderList()
 		{
 			ViewBag.CanRequestPayment = false;
@@ -59,6 +72,7 @@ namespace PZ.Controllers
 			return View(orderList);
 		}
 
+        [Authorize]
 		public ActionResult CheckOrder()
 		{
 			CheckOrderViewModel vm = new CheckOrderViewModel();
@@ -69,6 +83,7 @@ namespace PZ.Controllers
 			return View(orderList);
 		}
 
+        [Authorize]
 		public ActionResult ShoppingCart()
 		{
 			ShoppingCartModel model = new ShoppingCartModel();
@@ -76,7 +91,7 @@ namespace PZ.Controllers
 			return View(model);
 		}
 
-
+        [Authorize(Roles = "admin")]
 		public ActionResult OrderWaiter()
 		{
 
@@ -84,17 +99,12 @@ namespace PZ.Controllers
 			return View(orderList);
 		}
 
-		public ActionResult Suborder()
-		{
-			return View();
-		}
-
-
 		// POST: /Order/Create
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
 		public ActionResult Create([Bind(Include = "ID,UserID,TableID,WaiterID,Comment,IssueDate,State,Value")] Order order)
 		{
 			if (ModelState.IsValid)
@@ -110,7 +120,8 @@ namespace PZ.Controllers
 			return View(order);
 		}
 
-		// GET: /Order/Edit/5
+        // GET: /Order/Edit/5
+        [Authorize(Roles = "admin")]
 		public ActionResult Edit(int? id)
 		{
 			if (id == null)
@@ -132,7 +143,8 @@ namespace PZ.Controllers
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
 		public ActionResult Edit([Bind(Include = "ID,UserID,TableID,WaiterID,Comment,IssueDate,State,Value")] Order order)
 		{
 			if (ModelState.IsValid)
@@ -147,7 +159,8 @@ namespace PZ.Controllers
 			return View(order);
 		}
 
-		// GET: /Order/Delete/5
+        // GET: /Order/Delete/5
+        [Authorize(Roles = "admin")]
 		public ActionResult Delete(int? id)
 		{
 			if (id == null)
@@ -164,7 +177,8 @@ namespace PZ.Controllers
 
 		// POST: /Order/Delete/5
 		[HttpPost, ActionName("Delete")]
-		[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
 		public ActionResult DeleteConfirmed(int id)
 		{
 			var order = db.Order.Find(id);
@@ -181,7 +195,7 @@ namespace PZ.Controllers
 			}
 			base.Dispose(disposing);
 		}
-
+        [Authorize]
 		public ActionResult Inc(int id)
 		{
 			var item = db.ShoppingCart.Where(n => n.ID == id).Single();
@@ -191,7 +205,7 @@ namespace PZ.Controllers
 
 			return RedirectToAction("ShoppingCart");
 		}
-
+        [Authorize]
 		public ActionResult Dec(int id)
 		{
 
@@ -205,7 +219,7 @@ namespace PZ.Controllers
 			db.SaveChanges();
 			return RedirectToAction("ShoppingCart");
 		}
-
+        [Authorize]
 		public ActionResult Del(int id)
 		{
 			var item = db.ShoppingCart.Where(n => n.ID == id).Single();
@@ -214,10 +228,11 @@ namespace PZ.Controllers
 			return RedirectToAction("ShoppingCart");
 		}
 
+        [Authorize]
 		public ActionResult OrderCreate()
 		{
 			var PZUser = db.User.Where(n => n.Email == User.Identity.Name).FirstOrDefault();
-			var newOrder = new Order() { IssueDate = DateTime.Now, State = 1, TableID = 1, UserID = PZUser.ID };
+			var newOrder = new Order() { IssueDate = DateTime.Now, State = 1, TableID = int.Parse(PZUser.Comment), UserID = PZUser.ID };
 			db.Order.Add(newOrder);
 			db.SaveChanges();
 
@@ -236,6 +251,8 @@ namespace PZ.Controllers
 			return RedirectToAction("OrderList");
 		}
 
+
+        [Authorize(Roles = "admin")]
 		public ActionResult WaiterOrderProgress(int orderid)
 		{
 			var order = db.Order.Single(n => n.ID == orderid);
@@ -261,6 +278,7 @@ namespace PZ.Controllers
 			return RedirectToAction("OrderWaiter");
 		}
 
+        [Authorize]
 		public ActionResult RequestPayment()
 		{
 			var PZUser = db.User.Where(n => n.Email == User.Identity.Name).FirstOrDefault();
@@ -275,6 +293,7 @@ namespace PZ.Controllers
 			return RedirectToAction("OrderList");
 		}
 
+        [Authorize(Roles = "admin")]
 		public ActionResult RepUp(int id)
 		{
 			var PZUser = db.User.Where(n => n.ID == id).FirstOrDefault();
@@ -287,6 +306,7 @@ namespace PZ.Controllers
 			return RedirectToAction("OrderWaiter");
 		}
 
+        [Authorize(Roles = "admin")]
 		public ActionResult RepDown(int id)
 		{
 			var PZUser = db.User.Where(n => n.ID == id).FirstOrDefault();

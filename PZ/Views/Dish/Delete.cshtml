@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Delete</h2>
@@ -20,14 +21,6 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
             @Html.DisplayNameFor(model => model.Comment)
         </dt>
 
@@ -36,43 +29,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PromotionalPrice)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PromotionalPrice)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PicPath)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PicPath)
-        </dd>
-
-        <dt>
             @Html.DisplayNameFor(model => model.Rating)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.Rating)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IsServed)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsServed)
         </dd>
 
         <dt>
@@ -92,19 +53,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Menu.Category)
+            @Html.DisplayNameFor(model => model.MenuSubcategory1.Subcategory)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Menu.Category)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MenuSubcategory.Subcategory)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MenuSubcategory.Subcategory)
+            @Html.DisplayFor(model => model.MenuSubcategory1.Subcategory)
         </dd>
 
     </dl>

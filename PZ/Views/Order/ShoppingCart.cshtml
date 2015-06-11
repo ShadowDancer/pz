@@ -2,64 +2,116 @@
 @model ShoppingCartModel
 
 @{
-	ViewBag.Title = "title";
+    ViewBag.Title = "title";
 }
 
 <div>
-	<br /><br />
-	@{
-		if (Model.ShoppingCart.Count > 0)
-		{
-			<h2>Koszyk:</h2>
-			<table class="table">
-				<thead>
-					<tr>
-						<td width="40%">
-							Nazwa
-						</td>
-						<td width="20%">
-							Cena
-						</td>
-						<td width="20%">
-							Ilość
-						</td>
-					</tr>
-				</thead>
-				<tbody>
-					@for (int i = 0; i < Model.ShoppingCart.Count; i++)
-					{
-						<tr>
-							<td width="60%">
-								@(Model.ShoppingCart[i].Dish.NameID)
-							</td>
-							<td width="20%">
-								@(Model.ShoppingCart[i].Dish.GetPrice().ToString("F"))
-							</td>
-							<td width="5%">
-								@(Model.ShoppingCart[i].Quantity)
-							</td>
-							<td width="5%">
-								@Html.ActionLink("+", "inc", new { id = Model.ShoppingCart[i].ID })
-							</td>
-							<td width="5%">
-								@Html.ActionLink("-", "dec", new { id = Model.ShoppingCart[i].ID })
-							</td>
-							<td width="5%">
-								@Html.ActionLink("x", "del", new { id = Model.ShoppingCart[i].ID })
-							</td>
-						</tr>
-					}
-				</tbody>
-			</table>
+    <br /><br />
+    @{
+        if (Model.ShoppingCart.Count > 0)
+        {
+            <h2>Koszyk:</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td width="40%">
+                            Nazwa
+                        </td>
+                        <td width="20%">
+                            Cena
+                        </td>
+                        <td width="20%">
+                            Ilość
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.ShoppingCart.Count; i++)
+                    {
+                        <tr>
+                            <td width="60%">
+                                @(Model.ShoppingCart[i].Dish.NameID)
+                            </td>
+                            <td width="20%">
+                                @(Model.ShoppingCart[i].Dish.GetPrice().ToString("F"))
+                            </td>
+                            <td width="5%">
+                                @(Model.ShoppingCart[i].Quantity)
+                            </td>
+                            <td width="5%">
+                                @Html.ActionLink("+", "inc", new { id = Model.ShoppingCart[i].ID })
+                            </td>
+                            <td width="5%">
+                                @Html.ActionLink("-", "dec", new { id = Model.ShoppingCart[i].ID })
+                            </td>
+                            <td width="5%">
+                                @Html.ActionLink("x", "del", new { id = Model.ShoppingCart[i].ID })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            {
 
-			@Html.ActionLink("Zamawiam", "OrderCreate");
-		}
-		else
-		{
-			<div>
-				Koszyk jest pusty.
-			</div>
+                bool ok = false;
+                int table = -1;
+                string tableText = "wybierz";
+                using (var db = new PZEntities())
+                {
+                    var PZUser = db.User.FirstOrDefault(n => n.Email == User.Identity.Name);
+                    if (PZUser != null)
+                    {
+                        if (int.TryParse(PZUser.Comment, out table))
+                        {
+                            ok = true;
+                            tableText = table.ToString();
+                        }
+                    }
+                }
 
-		}
-	}
+                <span>Twój stolik: </span>
+                <a id="tableEdit" href="#" data-type="select" data-pk="0" data-title="Wybierz stolik">@(tableText)</a>
+
+                if (ok)
+                {
+                    @Html.ActionLink("Zamawiam", "OrderCreate")
+                    ;
+                }
+            }
+
+        }
+        else
+        {
+            <div>
+                Koszyk jest pusty.
+            </div>
+
+        }
+    }
+    <script type="text/javascript">
+
+        $('#tableEdit').editable({
+        value: -1,
+        send: "never",
+        source: [
+        @{using (var db = new PZEntities())
+        {
+            var tableList = db.Table.Select(n => n.ID).ToList();
+            for (int i = 0; i < tableList.Count; i++)
+            {
+                @Html.Raw("{ value: " + tableList[i].ToString() + ", text: '' + " + tableList[i].ToString() + " },\r\n")
+            }
+        }
+        }
+        ]
+        });
+
+        $('#tableEdit').on('save', function (e, params) {
+            var selectedLength = params.newValue;
+    
+            window.location.href = "/Order/Table/" + selectedLength;
+        });
+
+    </script>
 </div>
+

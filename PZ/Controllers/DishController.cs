@@ -11,25 +11,26 @@ using PZ.Models;
 
 namespace PZ.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class DishController : Controller
     {
         private PZEntities db = new PZEntities();
 
-        // GET: /Dish/
+        // GET: Dish
         public async Task<ActionResult> Index()
         {
-            var dish = db.Dish.Include(d => d.SubcategoryID).Include(d => d.SubcategoryID);
+            var dish = db.Dish.Include(d => d.MenuSubcategory1);
             return View(await dish.ToListAsync());
         }
 
-        // GET: /Dish/Details/5
+        // GET: Dish/Details/5
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var dish = await db.Dish.FindAsync(id);
+            Dish dish = await db.Dish.FindAsync(id);
             if (dish == null)
             {
                 return HttpNotFound();
@@ -37,20 +38,19 @@ namespace PZ.Controllers
             return View(dish);
         }
 
-        // GET: /Dish/Create
+        // GET: Dish/Create
         public ActionResult Create()
         {
-            ViewBag.MenuID = new SelectList(db.Menu, "ID", "Category");
-            ViewBag.MenuID = new SelectList(db.MenuSubcategory, "ID", "Subcategory");
+            ViewBag.SubcategoryID = new SelectList(db.MenuSubcategory, "ID", "Subcategory");
             return View();
         }
 
-        // POST: /Dish/Create
+        // POST: Dish/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include="ID,Description,Name,Comment,Price,PromotionalPrice,PicPath,Rating,IsServed,MenuID,NameID,ImageUrl")] Dish dish)
+        public async Task<ActionResult> Create([Bind(Include = "ID,Description,Comment,Rating,NameID,ImageUrl,SubcategoryID")] Dish dish)
         {
             if (ModelState.IsValid)
             {
@@ -59,34 +59,32 @@ namespace PZ.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.MenuID = new SelectList(db.Menu, "ID", "Category", dish.SubcategoryID);
-            ViewBag.MenuID = new SelectList(db.MenuSubcategory, "ID", "Subcategory", dish.SubcategoryID);
+            ViewBag.SubcategoryID = new SelectList(db.MenuSubcategory, "ID", "Subcategory", dish.SubcategoryID);
             return View(dish);
         }
 
-        // GET: /Dish/Edit/5
+        // GET: Dish/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var dish = await db.Dish.FindAsync(id);
+            Dish dish = await db.Dish.FindAsync(id);
             if (dish == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.MenuID = new SelectList(db.Menu, "ID", "Category", dish.SubcategoryID);
-            ViewBag.MenuID = new SelectList(db.MenuSubcategory, "ID", "Subcategory", dish.SubcategoryID);
+            ViewBag.SubcategoryID = new SelectList(db.MenuSubcategory, "ID", "Subcategory", dish.SubcategoryID);
             return View(dish);
         }
 
-        // POST: /Dish/Edit/5
+        // POST: Dish/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include="ID,Description,Name,Comment,Price,PromotionalPrice,PicPath,Rating,IsServed,MenuID,NameID,ImageUrl")] Dish dish)
+        public async Task<ActionResult> Edit([Bind(Include = "ID,Description,Comment,Rating,NameID,ImageUrl,SubcategoryID")] Dish dish)
         {
             if (ModelState.IsValid)
             {
@@ -94,19 +92,18 @@ namespace PZ.Controllers
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.MenuID = new SelectList(db.Menu, "ID", "Category", dish.SubcategoryID);
-            ViewBag.MenuID = new SelectList(db.MenuSubcategory, "ID", "Subcategory", dish.SubcategoryID);
+            ViewBag.SubcategoryID = new SelectList(db.MenuSubcategory, "ID", "Subcategory", dish.SubcategoryID);
             return View(dish);
         }
 
-        // GET: /Dish/Delete/5
+        // GET: Dish/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var dish = await db.Dish.FindAsync(id);
+            Dish dish = await db.Dish.FindAsync(id);
             if (dish == null)
             {
                 return HttpNotFound();
@@ -114,12 +111,12 @@ namespace PZ.Controllers
             return View(dish);
         }
 
-        // POST: /Dish/Delete/5
+        // POST: Dish/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            var dish = await db.Dish.FindAsync(id);
+            Dish dish = await db.Dish.FindAsync(id);
             db.Dish.Remove(dish);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");

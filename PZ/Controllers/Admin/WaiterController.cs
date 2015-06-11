@@ -10,6 +10,7 @@ using PZ.Models;
 
 namespace PZ.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class WaiterController : BaseAdminController
     {
         private PZEntities db = new PZEntities();

@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Index</h2>
@@ -15,25 +16,10 @@
             @Html.DisplayNameFor(model => model.Description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.Comment)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Price)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PromotionalPrice)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PicPath)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.Rating)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsServed)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.NameID)
@@ -42,10 +28,7 @@
             @Html.DisplayNameFor(model => model.ImageUrl)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Menu.Category)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MenuSubcategory.Subcategory)
+            @Html.DisplayNameFor(model => model.MenuSubcategory1.Subcategory)
         </th>
         <th></th>
     </tr>
@@ -56,25 +39,10 @@
             @Html.DisplayFor(modelItem => item.Description)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
             @Html.DisplayFor(modelItem => item.Comment)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PromotionalPrice)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PicPath)
-        </td>
-        <td>
             @Html.DisplayFor(modelItem => item.Rating)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsServed)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.NameID)
@@ -83,10 +51,7 @@
             @Html.DisplayFor(modelItem => item.ImageUrl)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Menu.Category)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MenuSubcategory.Subcategory)
+            @Html.DisplayFor(modelItem => item.MenuSubcategory1.Subcategory)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |

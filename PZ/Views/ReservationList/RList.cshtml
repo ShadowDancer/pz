@@ -63,12 +63,15 @@
 	</tbody>
 </table>
 
-<h3>
-	Zarezerwuj
-	<a id="table" href="#" data-type="select" data-pk="1" data-title="Wybierz stolik">stolik</a> o
-	<a id="hour" href="#" data-type="select" data-pk="2" data-disabled="True" data-title="Wybierz godzinę">godzinie</a> na
-	<a id="length" href="#" data-type="select" data-pk="3" data-disabled="True" data-title="Wybierz stolik">-</a> godzin.
-</h3>
+@if(Request.IsAuthenticated)
+{
+    <h3>
+        Zarezerwuj
+        <a id="table" href="#" data-type="select" data-pk="1" data-title="Wybierz stolik">stolik</a> o
+        <a id="hour" href="#" data-type="select" data-pk="2" data-disabled="True" data-title="Wybierz godzinę">godzinie</a> na
+        <a id="length" href="#" data-type="select" data-pk="3" data-disabled="True" data-title="Wybierz stolik">-</a> godzin.
+    </h3>
+}
 
 
 <script>

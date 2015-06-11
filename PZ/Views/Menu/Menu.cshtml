@@ -135,14 +135,17 @@
 								{
 									<tr>
 										<td width="50%">@(dish.Name)</td>
-										<td width="30%">
-											@(dish.Price.ToString("F"))
-											@if (User.IsInRole("admin"))
-											{
-												<a class="dishEdit" id="@dish.ID" href="#" data-type="text" data-pk="@(dish.ID)" data-title="Wpisz cenę w formacie x.xx, lub cenę i datę w formacie YYYY-MM-DD">Edytuj</a>
-											}
-										</td>
-										<td width="20%"><a id="@(dish.ID)" class="dish_order" href="#">Zamów</a></td>
+									    <td width="30%">
+									        @(dish.Price.ToString("F"))
+									        @if (User.IsInRole("admin"))
+									        {
+									            <a class="dishEdit" id="@dish.ID" href="#" data-type="text" data-pk="@(dish.ID)" data-title="Wpisz cenę w formacie x.xx, lub cenę i datę w formacie YYYY-MM-DD">Edytuj</a>
+									        }
+									    </td>
+                                        @if(Request.IsAuthenticated)
+                                        {
+                                            <td width="20%"><a id="@(dish.ID)" class="dish_order" href="#">Zamów</a></td>
+                                        }
 									</tr>
 								}
 							</tbody>
@@ -150,7 +153,7 @@
 					</div>
 				}
 				<h3>
-					@U.XEditableSelfTrigger("", "Nowe", @Url.Action("_EditSubmenuDescription"),
+					@U.XEditableSelfTrigger("-" + menu.ID.ToString(), "Nowe", @Url.Action("_EditSubmenuDescription"),
 					@<a href="#">+</a>)
 				</h3>
 				<div></div>

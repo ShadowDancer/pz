@@ -186,6 +186,7 @@
     <Compile Include="Controllers\Api\DTO\OrderDTO.cs" />
     <Compile Include="Controllers\Api\DTO\PostRequestDTO.cs" />
     <Compile Include="Controllers\DishController.cs" />
+    <Compile Include="Controllers\DishPricesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ReservationListController.cs" />
@@ -400,11 +401,6 @@
     <Content Include="Views\Menu\Edit.cshtml" />
     <Content Include="Views\Menu\Index.cshtml" />
     <Content Include="Views\Menu\Menu.cshtml" />
-    <Content Include="Views\Dish\Create.cshtml" />
-    <Content Include="Views\Dish\Delete.cshtml" />
-    <Content Include="Views\Dish\Details.cshtml" />
-    <Content Include="Views\Dish\Edit.cshtml" />
-    <Content Include="Views\Dish\Index.cshtml" />
     <Content Include="App_Code\U.cshtml" />
     <Content Include="Views\ReservationList\RList.cshtml" />
     <Content Include="Views\Shared\ShoppingCartPartial.cshtml" />
@@ -412,6 +408,16 @@
     <Content Include="Views\Order\OrderWaiter.cshtml" />
     <Content Include="Views\Order\CheckOrder.cshtml" />
     <Content Include="Views\Order\ShoppingCart.cshtml" />
+    <Content Include="Views\Dish\Create.cshtml" />
+    <Content Include="Views\Dish\Delete.cshtml" />
+    <Content Include="Views\Dish\Details.cshtml" />
+    <Content Include="Views\Dish\Edit.cshtml" />
+    <Content Include="Views\Dish\Index.cshtml" />
+    <Content Include="Views\DishPrices\Create.cshtml" />
+    <Content Include="Views\DishPrices\Delete.cshtml" />
+    <Content Include="Views\DishPrices\Details.cshtml" />
+    <Content Include="Views\DishPrices\Edit.cshtml" />
+    <Content Include="Views\DishPrices\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

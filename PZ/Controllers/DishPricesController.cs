@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
@@ -11,117 +12,113 @@ using PZ.Models;
 namespace PZ.Controllers
 {
     [Authorize(Roles = "admin")]
-    public class SubOrderController : Controller
+    public class DishPricesController : Controller
     {
         private PZEntities db = new PZEntities();
 
-        // GET: /SubOrder/
-        public ActionResult Index()
+        // GET: DishPrices
+        public async Task<ActionResult> Index()
         {
-            var suborder = db.SubOrder.Include(s => s.Dish).Include(s => s.Order);
-            return View(suborder.ToList());
+            var dishPrices = db.DishPrices.Include(d => d.Dish);
+            return View(await dishPrices.ToListAsync());
         }
 
-        // GET: /SubOrder/Details/5
-        public ActionResult Details(int? id)
+        // GET: DishPrices/Details/5
+        public async Task<ActionResult> Details(DateTime id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var suborder = db.SubOrder.Find(id);
-            if (suborder == null)
+            DishPrices dishPrices = await db.DishPrices.FindAsync(id);
+            if (dishPrices == null)
             {
                 return HttpNotFound();
             }
-            return View(suborder);
+            return View(dishPrices);
         }
 
-        // GET: /SubOrder/Create
+        // GET: DishPrices/Create
         public ActionResult Create()
         {
             ViewBag.DishID = new SelectList(db.Dish, "ID", "Description");
-            ViewBag.OrderID = new SelectList(db.Order, "ID", "Comment");
             return View();
         }
 
-        // POST: /SubOrder/Create
+        // POST: DishPrices/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="ID,OrderID,DishID,Quantity")] SubOrder suborder)
+        public async Task<ActionResult> Create([Bind(Include = "Price,DateFrom,DateTo,DishID")] DishPrices dishPrices)
         {
             if (ModelState.IsValid)
             {
-                db.SubOrder.Add(suborder);
-                db.SaveChanges();
+                db.DishPrices.Add(dishPrices);
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.DishID = new SelectList(db.Dish, "ID", "Description", suborder.DishID);
-            ViewBag.OrderID = new SelectList(db.Order, "ID", "Comment", suborder.OrderID);
-            return View(suborder);
+            ViewBag.DishID = new SelectList(db.Dish, "ID", "Description", dishPrices.DishID);
+            return View(dishPrices);
         }
 
-        // GET: /SubOrder/Edit/5
-        public ActionResult Edit(int? id)
+        // GET: DishPrices/Edit/5
+        public async Task<ActionResult> Edit(DateTime id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var suborder = db.SubOrder.Find(id);
-            if (suborder == null)
+            DishPrices dishPrices = await db.DishPrices.FindAsync(id);
+            if (dishPrices == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.DishID = new SelectList(db.Dish, "ID", "Description", suborder.DishID);
-            ViewBag.OrderID = new SelectList(db.Order, "ID", "Comment", suborder.OrderID);
-            return View(suborder);
+            ViewBag.DishID = new SelectList(db.Dish, "ID", "Description", dishPrices.DishID);
+            return View(dishPrices);
         }
 
-        // POST: /SubOrder/Edit/5
+        // POST: DishPrices/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include="ID,OrderID,DishID,Quantity")] SubOrder suborder)
+        public async Task<ActionResult> Edit([Bind(Include = "Price,DateFrom,DateTo,DishID")] DishPrices dishPrices)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(suborder).State = EntityState.Modified;
-                db.SaveChanges();
+                db.Entry(dishPrices).State = EntityState.Modified;
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.DishID = new SelectList(db.Dish, "ID", "Description", suborder.DishID);
-            ViewBag.OrderID = new SelectList(db.Order, "ID", "Comment", suborder.OrderID);
-            return View(suborder);
+            ViewBag.DishID = new SelectList(db.Dish, "ID", "Description", dishPrices.DishID);
+            return View(dishPrices);
         }
 
-        // GET: /SubOrder/Delete/5
-        public ActionResult Delete(int? id)
+        // GET: DishPrices/Delete/5
+        public async Task<ActionResult> Delete(DateTime id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var suborder = db.SubOrder.Find(id);
-            if (suborder == null)
+            DishPrices dishPrices = await db.DishPrices.FindAsync(id);
+            if (dishPrices == null)
             {
                 return HttpNotFound();
             }
-            return View(suborder);
+            return View(dishPrices);
         }
 
-        // POST: /SubOrder/Delete/5
+        // POST: DishPrices/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(DateTime id)
         {
-            var suborder = db.SubOrder.Find(id);
-            db.SubOrder.Remove(suborder);
-            db.SaveChanges();
+            DishPrices dishPrices = await db.DishPrices.FindAsync(id);
+            db.DishPrices.Remove(dishPrices);
+            await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 

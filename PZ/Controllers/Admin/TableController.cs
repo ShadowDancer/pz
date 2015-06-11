@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace PZ.Models
 {
+    [Authorize(Roles = "admin")]
     public class TableController : Controller
     {
         private PZEntities db = new PZEntities();

@@ -199,7 +199,14 @@ namespace PZ.Controllers
 		{
 			try
 			{
-				return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new ReservationListViewModel(input.ReservationDate, user.ID))) };
+			    int userID = -1;
+			    using (var db = new PZEntities())
+			    {
+			        var PZUser = db.User.FirstOrDefault(n => n.Email == user.Name);
+			        userID = PZUser.ID;
+			    }
+
+                return new HttpResponseMessage() { Content = new StringContent(JsonConvert.SerializeObject(new ReservationListViewModel(input.ReservationDate, userID))) };
 			}
 			catch (Exception ex)
 			{

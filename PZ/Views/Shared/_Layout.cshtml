@@ -26,26 +26,31 @@
                 @Html.ActionLink("Projekt zespołowy", "Index", "Home", null, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">					
-					
+                <ul class="nav navbar-nav">
+
                     <li>@Html.ActionLink("Menu", "../Menu/Menu")</li>
-                    <li>@Html.ActionLink("Profil", "../User/ViewProfile")</li>
-                    <li>@Html.ActionLink("Zamówienia", "../Order/OrderList")</li>
+                    @if(Request.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("Zamówienia", "../Order/OrderList")</li>
+                    }
                     <li>@Html.ActionLink("Rezerwacje", "../ReservationList/RList")</li>
-                    <li class="dropdown-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                            <span class="caret"></span>Dropdown
-                        </a>
-	                    <ul class="dropdown-menu">
-							<li>@Html.ActionLink("Order", "../Order/OrderWaiter")</li>
-		                    <li>@Html.ActionLink("Waiter", "../Waiter")</li>
-		                    <li>@Html.ActionLink("Table", "../Table")</li>
-		                    <li>@Html.ActionLink("Dish", "../Dish")</li>
-		                    <li>@Html.ActionLink("Menu", "../Menu/Menu")</li>
-	                    </ul>
+                    @if (User.IsInRole("admin"))
+                    {
+                        <li class="dropdown-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <span class="caret"></span>Dropdown
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Order", "../Order/OrderWaiter")</li>
+                                <li>@Html.ActionLink("Waiter", "../Waiter")</li>
+                                <li>@Html.ActionLink("Table", "../Table")</li>
+                                <li>@Html.ActionLink("Dish", "../Dish")</li>
+                                <li>@Html.ActionLink("Dish", "../DishPrices")</li>
+                            </ul>
 
 
-                    </li>
+                        </li>
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

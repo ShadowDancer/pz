@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace PZ.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class UserController : BaseAdminController
     {
         private PZEntities db = new PZEntities();

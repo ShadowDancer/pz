@@ -17,7 +17,7 @@ namespace PZ.Models
 
 			using (var db = new PZEntities())
 			{
-				Data = new List<int[]>();
+                Data = new List<int[]>();
 
 				List<Reservation_List> reservations = db.Reservation_List
 					.OrderBy(n => n.TableID)

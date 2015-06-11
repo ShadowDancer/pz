@@ -10,10 +10,12 @@ using PZ.Models;
 
 namespace PZ.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class MenuController : Controller
     {
         private PZEntities db = new PZEntities();
 
+        [AllowAnonymous]
         public ActionResult Menu()
         {
             return View(new MenuBundleViewModel());
@@ -108,15 +110,24 @@ namespace PZ.Controllers
         {
             using (var db = new PZEntities())
             {
+
+                var menuID = 0;
                 var id = 0;
                 if (!string.IsNullOrEmpty(pk))
                 {
                     id = int.Parse(pk);
+
+                    if (id < 0)
+                    {
+                        menuID = -id;
+                        id = 0;
+                    }
                 }
                 var subMenu = db.MenuSubcategory.FirstOrDefault(n => n.ID == id);
                 if (subMenu == null)
                 {
                     subMenu = new MenuSubcategory();
+                    subMenu.MenuID = menuID;
                     db.MenuSubcategory.Add(subMenu);
                 }
 

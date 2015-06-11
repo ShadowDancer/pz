@@ -33,14 +33,16 @@ namespace PZ.Controllers
 				return View(new ReservationListViewModel(requestDate, -1));
 		}
 
-		// GET: /ReservationList/
+        // GET: /ReservationList/
+        [Authorize(Roles = "admin")]
 		public ActionResult Index()
 		{
 			var reservationList = db.Reservation_List.Include(r => r.Table).Include(r => r.User);
 			return View(reservationList.ToList());
 		}
 
-		// GET: /ReservationList/Details/5
+        // GET: /ReservationList/Details/5
+        [Authorize(Roles = "admin")]
 		public ActionResult Details(int? id)
 		{
 			if (id == null)
@@ -55,7 +57,8 @@ namespace PZ.Controllers
 			return View(reservation_list);
 		}
 
-		// GET: /ReservationList/Create
+        // GET: /ReservationList/Create
+        [Authorize(Roles = "admin")]
 		public ActionResult Create()
 		{
 			ViewBag.TableID = new SelectList(db.Table, "ID", "Comment");
@@ -67,7 +70,8 @@ namespace PZ.Controllers
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
 		public ActionResult Create([Bind(Include = "ID,From,To,UserID,TableID")] Reservation_List reservation_list)
 		{
 			if (ModelState.IsValid)
@@ -82,7 +86,8 @@ namespace PZ.Controllers
 			return View(reservation_list);
 		}
 
-		// GET: /ReservationList/Edit/5
+        // GET: /ReservationList/Edit/5
+        [Authorize(Roles = "admin")]
 		public ActionResult Edit(int? id)
 		{
 			if (id == null)
@@ -103,7 +108,8 @@ namespace PZ.Controllers
 		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
 		public ActionResult Edit([Bind(Include = "ID,From,To,UserID,TableID")] Reservation_List reservation_list)
 		{
 			if (ModelState.IsValid)
@@ -117,7 +123,8 @@ namespace PZ.Controllers
 			return View(reservation_list);
 		}
 
-		// GET: /ReservationList/Delete/5
+        // GET: /ReservationList/Delete/5
+        [Authorize(Roles = "admin")]
 		public ActionResult Delete(int? id)
 		{
 			if (id == null)
@@ -134,7 +141,8 @@ namespace PZ.Controllers
 
 		// POST: /ReservationList/Delete/5
 		[HttpPost, ActionName("Delete")]
-		[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
 		public ActionResult DeleteConfirmed(int id)
 		{
 			var reservation_list = db.Reservation_List.Find(id);

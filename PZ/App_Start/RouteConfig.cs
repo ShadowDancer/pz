@@ -19,6 +19,8 @@ namespace PZ
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
 
+            routes.IgnoreRoute("");
+
         }
     }
 }
